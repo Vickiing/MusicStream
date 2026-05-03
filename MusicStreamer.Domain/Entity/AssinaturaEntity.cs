@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int Tipo { get; set; }
-        public bool Ativa { get; set; }
+        public bool Status { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public bool RenovacaoAutomatica { get; set; }
