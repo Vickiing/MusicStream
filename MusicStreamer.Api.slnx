@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MusicStreamer.Api/MusicStreamer.Api.csproj" />
+  <Project Path="MusicStreamer.App/MusicStreamer.App.csproj" Id="f5f54d14-b561-466f-8f6b-2b8e4c965633" />
+  <Project Path="MusicStreamer.Domain/MusicStreamer.Domain.csproj" Id="4e023adf-fa42-4b22-b3bf-ae5fe0cc2213" />
+  <Project Path="StreamerMusic.infrastructure/MusicStreamer.infrastructure.csproj" />
+</Solution>
