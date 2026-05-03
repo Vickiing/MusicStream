@@ -4,4 +4,5 @@ obj/
 .dotnet-home/
 .appdata/
 *.log
+*.err
 *.user
