@@ -3,7 +3,7 @@ using MusicStreamer.Domain.Entity;
 
 namespace MusicStreamer.App.Contracts
 {
-    public interface IUsuarioApp
+    public interface IUsuarioApplicationService
     {
         Task<bool> CadastrarUsuarioAsync(CadastrarUsuarioInput input);
         Task<UsuarioEntity?> GetUsuarioByIdAsync(int id);

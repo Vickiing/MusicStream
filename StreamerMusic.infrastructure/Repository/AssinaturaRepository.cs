@@ -1,4 +1,5 @@
-﻿using MusicStreamer.Domain.Contracts;
+using Microsoft.EntityFrameworkCore;
+using MusicStreamer.Domain.Contracts;
 using MusicStreamer.Domain.Entity;
 
 namespace MusicStreamer.infrastructure.Repository
@@ -7,29 +8,19 @@ namespace MusicStreamer.infrastructure.Repository
     {
         private readonly DataContext _context = context;
 
-        public async Task<bool> AtivarAssinaturaUsuarioAsync(int usuarioId)
+        public async Task<AssinaturaEntity?> CadastrarAssinaturaAsync(AssinaturaEntity entity)
         {
-            var assinatura = new AssinaturaEntity
-            {
-                Id = usuarioId,
-                Tipo = 1,
-                Status = true,
-                DataInicio = DateTime.UtcNow,
-                DataFim = DateTime.UtcNow.AddMonths(1),
-                RenovacaoAutomatica = true,
-                DataFimAutomatica = DateTime.UtcNow.AddMonths(2)
-            };
-            _context.Assinaturas.Add(assinatura);
+            _context.Assinaturas.Add(entity);
             var saveResult = await _context.SaveChangesAsync();
-            return saveResult > 0;
+            return saveResult > 0 ? entity : null;
         }
 
         public async Task<bool> CancelarAssinaturaUsuarioAsync(int usuarioId)
         {
-            var assinatura = _context.Assinaturas.FirstOrDefault(a => a.Id == usuarioId);
+            var assinatura = await _context.Assinaturas.FirstOrDefaultAsync(a => a.UsuarioId == usuarioId && a.Ativa);
             if (assinatura != null)
             {
-                assinatura.Status = false;
+                assinatura.Ativa = false;
                 _context.Update(assinatura);
                 var saveResult = await _context.SaveChangesAsync();
                 return saveResult > 0;

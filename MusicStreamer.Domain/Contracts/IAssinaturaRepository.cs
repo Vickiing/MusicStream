@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using MusicStreamer.Domain.Entity;
 
 namespace MusicStreamer.Domain.Contracts
 {
     public interface IAssinaturaRepository
     {
-        Task<bool> AtivarAssinaturaUsuarioAsync(int usuarioId);
+        Task<AssinaturaEntity?> CadastrarAssinaturaAsync(AssinaturaEntity entity);
         Task<bool> CancelarAssinaturaUsuarioAsync(int usuarioId);
     }
 }

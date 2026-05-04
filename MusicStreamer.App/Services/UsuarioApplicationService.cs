@@ -5,7 +5,7 @@ using MusicStreamer.Domain.Entity;
 
 namespace MusicStreamer.App.Services
 {
-    public class UsuarioApp(IUsuarioRepository usuarioRepository) : IUsuarioApp
+    public class UsuarioApplicationService(IUsuarioRepository usuarioRepository) : IUsuarioApplicationService
     {
         private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
 

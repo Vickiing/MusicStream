@@ -7,14 +7,14 @@ namespace MusicStreamer.Api.Controllers
 {
     [ApiController]
     [Route("api/usuarios")]
-    public class CadastrarUsuarioController(IUsuarioApp usuarioApp) : ControllerBase
+    public class UsuariosController(IUsuarioApplicationService usuarioApplicationService) : ControllerBase
     {
-        private readonly IUsuarioApp _usuarioApp = usuarioApp;
+        private readonly IUsuarioApplicationService _usuarioApplicationService = usuarioApplicationService;
 
         [HttpPost]
-        public async Task<IActionResult> CadastrarUsuario([FromBody] CadastrarUsuarioRequest usuario)
+        public async Task<IActionResult> CadastrarUsuario([FromBody] CadastrarUsuarioRequest usuarioRequest)
         {
-            if (usuario is null)
+            if (usuarioRequest is null)
             {
                 return BadRequest("Envie o corpo como JSON no formato esperado pela API.");
             }
@@ -26,13 +26,13 @@ namespace MusicStreamer.Api.Controllers
 
             var input = new CadastrarUsuarioInput
             {
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                Senha = usuario.Senha,
-                Cpf = usuario.Cpf
+                Nome = usuarioRequest.Nome,
+                Email = usuarioRequest.Email,
+                Senha = usuarioRequest.Senha,
+                Cpf = usuarioRequest.Cpf
             };
 
-            var resultado = await _usuarioApp.CadastrarUsuarioAsync(input);
+            var resultado = await _usuarioApplicationService.CadastrarUsuarioAsync(input);
 
             if (!resultado)
             {

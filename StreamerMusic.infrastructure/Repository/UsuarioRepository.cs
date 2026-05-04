@@ -15,6 +15,13 @@ namespace MusicStreamer.infrastructure.Repository
             return result > 0;
         }
 
+        public async Task<bool> AtualizarUsuarioAsync(UsuarioEntity entity)
+        {
+            _context.Usuarios.Update(entity);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
+
         public Task<List<UsuarioEntity>> GetAllUsuariosAsync()
         {
             var usuarios = _context.Usuarios.ToList();
