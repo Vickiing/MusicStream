@@ -9,7 +9,7 @@ namespace MusicStreamer.App.Services
     {
         private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
 
-        public async Task<bool> CadastrarUsuarioAsync(CadastrarUsuarioInput input)
+        public async Task<bool> CadastrarUsuarioAsync(UsuarioInput input)
         {
             if (input is null)
             {
@@ -22,30 +22,14 @@ namespace MusicStreamer.App.Services
                 return false;
             }
 
-            var usuarioEntity = new UsuarioEntity
-            {
-                Nome = input.Nome,
-                Email = input.Email,
-                Senha = input.Senha,
-                Cpf = input.Cpf
-            };
+            var usuarioEntity = UsuarioEntity.Criar(input.Nome, input.Email, input.Senha, input.Cpf);
 
             return await _usuarioRepository.CadastrarUsuarioAsync(usuarioEntity);
         }
 
-        public Task<List<UsuarioEntity>> GetAllUsuariosAsync()
+        public async Task<bool> RemoverUsuarioAsync(Guid id)
         {
-            return _usuarioRepository.GetAllUsuariosAsync();
-        }
-
-        public Task<UsuarioEntity?> GetUsuarioByIdAsync(int id)
-        {
-            return _usuarioRepository.GetUsuarioByIdAsync(id);
-        }
-
-        public Task RemoverUsuarioAsync(int id)
-        {
-            return _usuarioRepository.RemoverUsuarioAsync(id);
+            return await _usuarioRepository.RemoverUsuarioAsync(id);
         }
     }
 }

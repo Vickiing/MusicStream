@@ -24,8 +24,9 @@ namespace MusicStreamer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var input = new CadastrarUsuarioInput
+            var input = new UsuarioInput
             {
+                Id = usuarioRequest.Id,
                 Nome = usuarioRequest.Nome,
                 Email = usuarioRequest.Email,
                 Senha = usuarioRequest.Senha,
@@ -40,6 +41,38 @@ namespace MusicStreamer.Api.Controllers
             }
 
             return Created(string.Empty, new { mensagem = "Usuario cadastrado com sucesso!" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExcluirCadastroUsuario([FromBody] UsuarioRequest usuarioRequest)
+        {
+
+            if (usuarioRequest is null)
+            {
+                return BadRequest();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var usuarioExclusao = new UsuarioInput
+            {
+                Id = usuarioRequest.Id,
+                Nome = usuarioRequest.Nome,
+                Email = usuarioRequest.Email,
+                Senha = usuarioRequest.Senha,
+                Cpf = usuarioRequest.Cpf
+
+            };
+
+            var comandoExclusao = await _usuarioApplicationService.RemoverUsuarioAsync(usuarioExclusao.Id);
+            if (!comandoExclusao)
+            {
+                return BadRequest("Não foi possível excluir o usuário");
+            }
+
+            return Ok("Usuário exclupido com sucesso!");
         }
     }
 }

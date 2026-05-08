@@ -65,7 +65,7 @@ namespace MusicStreamer.App.Services
             return usuarioAtualizado;
         }
 
-        public async Task<bool> CancelarAssinaturaAsync(int usuarioId)
+        public async Task<bool> CancelarAssinaturaAsync(Guid usuarioId)
         {
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId);
             if (usuario is null)

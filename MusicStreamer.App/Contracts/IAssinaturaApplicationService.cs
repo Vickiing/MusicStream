@@ -5,6 +5,6 @@ namespace MusicStreamer.App.Contracts
     public interface IAssinaturaApplicationService
     {
         Task<bool> AtivarAssinaturaAsync(AtivarAssinaturaInput ativarAssinaturaInput);
-        Task<bool> CancelarAssinaturaAsync(int usuarioId);
+        Task<bool> CancelarAssinaturaAsync(Guid usuarioId);
     }
 }

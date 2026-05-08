@@ -38,7 +38,7 @@ namespace MusicStreamer.Api.Controllers
         }
 
         [HttpPost("cancelar")]
-        public async Task<IActionResult> CancelarAssinatura(int usuarioId)
+        public async Task<IActionResult> CancelarAssinatura(Guid usuarioId)
         {
             var resultado = await _assinaturaApplicationService.CancelarAssinaturaAsync(usuarioId);
 

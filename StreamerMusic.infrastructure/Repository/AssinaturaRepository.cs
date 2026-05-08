@@ -15,7 +15,7 @@ namespace MusicStreamer.infrastructure.Repository
             return saveResult > 0 ? entity : null;
         }
 
-        public async Task<bool> CancelarAssinaturaUsuarioAsync(int usuarioId)
+        public async Task<bool> CancelarAssinaturaUsuarioAsync(Guid usuarioId)
         {
             var assinatura = await _context.Assinaturas.FirstOrDefaultAsync(a => a.UsuarioId == usuarioId && a.Ativa);
             if (assinatura != null)

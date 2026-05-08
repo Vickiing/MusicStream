@@ -2,22 +2,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MusicStreamer.Domain.Entity
 {
-    [Table("Usuarios")]
+    
     public class UsuarioEntity
     {
-        [Column("Id")]
-        public int Id { get; set; }
-        [Column("Nome")]
+        
+        public Guid Id { get; set; }
         public required string Nome { get; set; }
-        [Column("Email")]
         public required string Email { get; set; }
-        [Column("Senha")]
         public string Senha { get; set; } = string.Empty;
-        [Column("Cpf")]
         public int Cpf { get; set; }
-        [Column("AssinaturaAtiva")]
         public bool AssinaturaAtiva { get; set; }
-        [Column("IdAssinatura")]
-        public int? AssinaturaId { get; set; }
+        public Guid? AssinaturaId { get; set; }
+
+        public UsuarioEntity() { }
+        public static UsuarioEntity Criar(string nome, string email, string senha, int cpf)
+        {
+            var usuario = new UsuarioEntity
+            {
+                Id = Guid.NewGuid(),
+                Nome = nome,
+                Email = email,
+                Senha = senha,
+                Cpf = cpf,
+                AssinaturaAtiva = false,
+                AssinaturaId = null
+            };
+            return usuario;
+        }
     }
 }

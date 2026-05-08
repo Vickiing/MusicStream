@@ -1,8 +1,8 @@
-namespace MusicStreamer.Api.Dtos
+﻿namespace MusicStreamer.Api.Dtos
 {
-    public class CadastrarUsuarioRequest
+    public class UsuarioRequest
     {
-        public required Guid Id { get; set; }
+        public Guid Id { get; set; }
         public required string Nome { get; set; }
         public required string Email { get; set; }
         public required string Senha { get; set; } = string.Empty;

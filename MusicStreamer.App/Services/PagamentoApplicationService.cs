@@ -12,7 +12,7 @@ namespace MusicStreamer.App.Services
                 return Task.FromResult(false);
             }
 
-            if (ativarAssinaturaInput.UsuarioId <= 0 || ativarAssinaturaInput.TipoPagamento <= 0 || ativarAssinaturaInput.TipoAssinatura <= 0)
+            if (ativarAssinaturaInput.TipoPagamento <= 0 || ativarAssinaturaInput.TipoAssinatura <= 0)
             {
                 return Task.FromResult(false);
             }

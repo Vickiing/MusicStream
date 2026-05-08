@@ -28,7 +28,7 @@ namespace MusicStreamer.infrastructure.Repository
             return Task.FromResult(usuarios);
         }
 
-        public async Task<UsuarioEntity?> GetUsuarioByIdAsync(int id)
+        public async Task<UsuarioEntity?> GetUsuarioByIdAsync(Guid id)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
         }
@@ -38,14 +38,17 @@ namespace MusicStreamer.infrastructure.Repository
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task RemoverUsuarioAsync(int id)
+        public async Task<bool> RemoverUsuarioAsync(Guid id)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            
             if (usuario != null)
             {
                 _context.Usuarios.Remove(usuario);
                 await _context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
     }
 }
