@@ -19,7 +19,6 @@ public sealed class UserAccountRepository(MusicStreamerDbContext dbContext) : IC
         var emailNormalizado = new EnderecoEmail(email);
 
         return dbContext.UserAccounts
-            .AsNoTracking()
             .FirstOrDefaultAsync(item => item.Email == emailNormalizado, cancellationToken);
     }
 
@@ -30,7 +29,6 @@ public sealed class UserAccountRepository(MusicStreamerDbContext dbContext) : IC
 
     public async Task UpdateAsync(ContaUsuario account, CancellationToken cancellationToken = default)
     {
-        dbContext.UserAccounts.Update(account);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

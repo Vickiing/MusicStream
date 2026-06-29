@@ -83,7 +83,8 @@ Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startu
 
 - Criacao de conta
 - Login
-- Escolha de plano
+- Escolha de plano com simulacao de assinatura
+- Player visual com botoes comuns de reproducao
 - Listagem de bandas e albuns
 - Busca de bandas e musicas
 - Criacao de playlist
@@ -94,6 +95,17 @@ Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startu
 - Notificacao para comerciante e dono do cartao
 - Preparacao para Azure SQL Server e hospedagem no Azure
 
+## Rubrica 4 - Microsoft Azure
+
+**4.1 Microsoft Azure:** a aplicacao foi pensada para rodar como um web app publicado no Azure, separando configuracao, camadas e dependencia de ambiente para facilitar implantacao e manutencao.
+
+**4.2 Armazenamento de dados no Microsoft Azure:** o uso de SQL gerenciado evita administrar servidor local, facilita backup, escala e reduz o trabalho operacional para um sistema com autenticacao, catalogo e transacoes.
+
+**4.3 Azure SQL Database:** o banco relacional foi escolhido porque o sistema tem entidades conectadas entre si, precisa de integridade entre usuarios, planos, playlists, favoritos e transacoes, e o EF Core conversa naturalmente com esse modelo.
+
+**4.4 Azure App Service:** o App Service atende bem uma aplicacao ASP.NET MVC + Web API porque simplifica publicacao, deployment e execucao da aplicacao sem exigir infraestrutura propria, mantendo a entrega mais direta para a demonstracao.
+
 ## Validacao executada
 
-- Build realizado com sucesso: `dotnet build MusicStreamer.slnx --no-restore`
+- Revisao de codigo e estrutura concluida no workspace.
+- A compilacao nao foi fechada localmente porque o ambiente bloqueou acesso ao feed nuget.org.

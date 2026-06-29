@@ -26,6 +26,10 @@
             color: var(--text);
         }
 
+        body.is-loading {
+            cursor: progress;
+        }
+
         a { color: inherit; text-decoration: none; }
         button, input, select {
             font: inherit;
@@ -70,12 +74,61 @@
         }
 
         .muted { color: var(--muted); }
+        .error {
+            color: #ff8a95;
+            margin: 0;
+        }
         .status {
             background: rgba(29, 185, 84, 0.12);
             border: 1px solid rgba(29, 185, 84, 0.25);
             color: #b8f5ce;
             padding: 12px 14px;
             border-radius: 14px;
+        }
+
+        .global-loading {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(7, 10, 14, 0.62);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 140ms ease;
+        }
+
+        .global-loading.is-visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .global-loading-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: rgba(18, 24, 32, 0.96);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.16);
+            border-top-color: var(--accent);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .app-shell {
@@ -183,6 +236,84 @@
 
         .content-body {
             padding: 24px;
+        }
+
+        .player-shell {
+            position: sticky;
+            bottom: 16px;
+            margin: 0 24px 24px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: rgba(18, 24, 32, 0.94);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+            display: grid;
+            gap: 12px;
+        }
+
+        .player-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .player-track {
+            display: grid;
+            gap: 2px;
+        }
+
+        .player-title {
+            font-weight: 700;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .player-button {
+            min-width: 42px;
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-2);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .player-button.primary {
+            background: var(--accent);
+            color: #08110b;
+            border-color: var(--accent);
+        }
+
+        .player-meta {
+            display: grid;
+            gap: 8px;
+        }
+
+        .player-progress {
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: #1c2530;
+            overflow: hidden;
+        }
+
+        .player-progress > span {
+            display: block;
+            width: 38%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #54d97f);
+            border-radius: inherit;
         }
 
         .auth-shell {
@@ -304,6 +435,13 @@
     var useShell = (ViewData["UseAppShell"] as bool?) == true;
 }
 
+<div id="global-loading" class="global-loading" hidden aria-hidden="true" aria-live="polite" aria-busy="true">
+    <div class="global-loading-card" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Carregando...</span>
+    </div>
+</div>
+
 @if (useShell)
 {
     <div class="app-shell">
@@ -327,5 +465,80 @@ else
         @RenderBody()
     </main>
 }
+@if (useShell)
+{
+    <div class="player-shell" aria-label="Player simulado">
+        <div class="player-top">
+            <div class="player-track">
+                <span class="player-title">Player simulado</span>
+                <span class="muted">Escolha um plano para liberar a experiencia musical</span>
+            </div>
+            <div class="chip">Plano ativo: simulacao</div>
+        </div>
+
+        <div class="player-meta">
+            <div class="player-progress" aria-hidden="true"><span></span></div>
+            <div class="player-controls">
+                <button type="button" class="player-button secondary" aria-label="Anterior">Prev</button>
+                <button type="button" class="player-button primary" aria-label="Reproduzir">Play</button>
+                <button type="button" class="player-button secondary" aria-label="Pausar">Pause</button>
+                <button type="button" class="player-button secondary" aria-label="Proxima">Next</button>
+                <button type="button" class="player-button secondary" aria-label="Repetir">Loop</button>
+                <button type="button" class="player-button secondary" aria-label="Aleatorio">Mix</button>
+                <span class="muted">00:42 / 03:12</span>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    (() => {
+        const overlay = document.getElementById('global-loading');
+        if (!overlay) {
+            return;
+        }
+
+        const showLoading = () => {
+            overlay.hidden = false;
+            overlay.classList.add('is-visible');
+            document.body.classList.add('is-loading');
+        };
+
+        const hideLoading = () => {
+            overlay.classList.remove('is-visible');
+            document.body.classList.remove('is-loading');
+            window.setTimeout(() => {
+                if (!overlay.classList.contains('is-visible')) {
+                    overlay.hidden = true;
+                }
+            }, 150);
+        };
+
+        document.addEventListener('submit', event => {
+            const form = event.target;
+            if (!(form instanceof HTMLFormElement)) {
+                return;
+            }
+
+            if (form.noValidate || form.checkValidity()) {
+                showLoading();
+            }
+        }, true);
+
+        document.addEventListener('click', event => {
+            const target = event.target;
+            if (!(target instanceof Element)) {
+                return;
+            }
+
+            const link = target.closest('a[href]');
+            if (link instanceof HTMLAnchorElement && link.target !== '_blank' && !link.hasAttribute('download')) {
+                showLoading();
+            }
+        }, true);
+
+        window.addEventListener('pageshow', hideLoading);
+        window.addEventListener('beforeunload', showLoading);
+    })();
+</script>
 </body>
 </html>

@@ -8,6 +8,15 @@
     <div class="status">@Model.StatusMessage</div>
 }
 
+<section class="panel" style="margin-bottom:16px;">
+    <div class="chip">Assinatura</div>
+    <h1 style="margin-top:10px;">Escolha um plano para liberar as musicas</h1>
+    <p class="muted" style="max-width: 760px;">
+        A selecao abaixo simula a assinatura exigida no trabalho. O usuario escolhe um plano,
+        confirma a acao e a aplicacao considera o acesso musical habilitado para a demonstracao.
+    </p>
+</section>
+
 <section class="grid two">
     @foreach (var plan in Model.Plans)
     {
@@ -15,14 +24,21 @@
             <div class="chip">Plano</div>
             <h2 style="margin-top:10px;">@plan.Name</h2>
             <div class="muted">Mensalidade: @plan.MonthlyPrice.ToString("C")</div>
-            <div class="muted">Limite: @plan.MaxTransactionAmount.ToString("C")</div>
-            <div class="muted">Noite: @(plan.AllowsNightTransactions ? "Sim" : "Nao")</div>
+            <div class="muted">Limite de transacao: @plan.MaxTransactionAmount.ToString("C")</div>
+            <div class="muted">Acesso noturno: @(plan.AllowsNightTransactions ? "Liberado" : "Bloqueado")</div>
 
-            <form asp-action="ChoosePlan" method="post" style="margin-top:14px;">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="PlanId" value="@plan.Id" />
-                <button type="submit">Simular pagamento</button>
-            </form>
+            <div class="stack" style="margin-top:14px;">
+                <div class="summary-item">
+                    <span class="muted">Experiencia do plano</span>
+                    <strong>@(plan.AllowsNightTransactions ? "Ideal para ouvir a noite" : "Uso padrao durante o dia")</strong>
+                </div>
+
+                <form asp-action="ChoosePlan" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PlanId" value="@plan.Id" />
+                    <button type="submit">Escolher plano</button>
+                </form>
+            </div>
         </div>
     }
 </section>

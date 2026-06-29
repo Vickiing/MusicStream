@@ -34,7 +34,22 @@ public sealed class AuthService(
         }
 
         account.RegisterLogin(DateTimeOffset.UtcNow);
-        await userAccountRepository.UpdateAsync(account, cancellationToken);
+
+        using var loginUpdateCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        loginUpdateCts.CancelAfter(TimeSpan.FromSeconds(3));
+
+        try
+        {
+            await userAccountRepository.UpdateAsync(account, loginUpdateCts.Token);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            // Atualizacao de ultimo login nao deve impedir o acesso do usuario.
+        }
+        catch (Exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            // Mantem o login funcional mesmo se a escrita auxiliar falhar.
+        }
 
         return new RespostaAutenticacaoDto(account.Id, account.DisplayName, account.Email.Value, tokenService.Generate(account));
     }
