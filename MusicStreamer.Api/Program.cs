@@ -29,7 +29,10 @@ var azureSqlConnection = builder.Configuration.GetConnectionString("AzureSqlConn
     ?? throw new InvalidOperationException("Configure ConnectionStrings:AzureSqlConnection com a connection string do Azure SQL Server.");
 
 builder.Services.AddDbContext<MusicStreamerDbContext>(options =>
-    options.UseSqlServer(azureSqlConnection));
+    options.UseSqlServer(azureSqlConnection, sqlServerOptions =>
+    {
+        sqlServerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
+    }));
 
 builder.Services.AddScoped<IContaUsuarioRepository, UserAccountRepository>();
 builder.Services.AddScoped<IPlanoAssinaturaRepository, SubscriptionPlanRepository>();

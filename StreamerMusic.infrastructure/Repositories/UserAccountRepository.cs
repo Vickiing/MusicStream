@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
+using MusicStreamer.Domain.ValueObjects;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
@@ -15,13 +16,11 @@ public sealed class UserAccountRepository(MusicStreamerDbContext dbContext) : IC
 
     public Task<ContaUsuario?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var normalizedEmail = email.Trim().ToUpperInvariant();
+        var emailNormalizado = new EnderecoEmail(email);
+
         return dbContext.UserAccounts
-            .AsEnumerable()
-            .FirstOrDefault(item => item.Email.NormalizedValue == normalizedEmail)
-            is { } account
-            ? Task.FromResult<ContaUsuario?>(account)
-            : Task.FromResult<ContaUsuario?>(null);
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Email == emailNormalizado, cancellationToken);
     }
 
     public Task<ContaUsuario?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
