@@ -5,16 +5,16 @@
     var monthlyPriceText = Model.MonthlyPrice.ToString("C");
 }
 
-@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
-{
-    <div class="status">@Model.StatusMessage</div>
-}
+<div id="payment-status" class="status" style="display:@(string.IsNullOrWhiteSpace(Model.StatusMessage) ? "none" : "block")">
+    @Model.StatusMessage
+</div>
 
-<section class="panel" style="margin-bottom:16px;">
+<section class="panel" style="margin:16px 0;">
     <div class="chip">Pagamento de ativacao</div>
     <h1 style="margin-top:10px;">Finalize a assinatura de @Model.PlanName</h1>
     <p class="muted" style="max-width: 760px;">
-        Esta etapa representa a confirmacao do pagamento. O valor fixo de R$50 serve para ativar a assinatura no sistema e liberar a navegacao do player.
+        O valor fixo de R$50 apenas simula a confirmacao da compra. Ao concluir, a assinatura passa a valer
+        imediatamente no layout e no player.
     </p>
 </section>
 
@@ -39,7 +39,12 @@
 
     <section class="panel">
         <h2>Confirmar pagamento</h2>
-        <form asp-action="ConfirmPlanPayment" method="post">
+        @if (!Model.IsUpgradeAllowed)
+        {
+            <div class="status">Voce ja possui um plano igual ou superior. Escolha uma opcao acima do plano atual.</div>
+        }
+
+        <form asp-action="ConfirmPlanPayment" method="post" data-ajax-submit="true" data-status-target="#payment-status">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="PlanId" />
             <input type="hidden" asp-for="PaymentAmount" value="50" />
@@ -47,7 +52,14 @@
             <label>Valor fixo</label>
             <input value="@paymentAmountText" disabled />
 
-            <button type="submit">Pagar R$50 e ativar plano</button>
+            @if (Model.IsUpgradeAllowed)
+            {
+                <button type="submit">Pagar R$50 e ativar plano</button>
+            }
+            else
+            {
+                <button type="submit" disabled>Plano indisponivel</button>
+            }
         </form>
     </section>
 </div>

@@ -42,7 +42,6 @@ public sealed class PlaylistRepository(MusicStreamerDbContext dbContext) : IPlay
 
     public async Task UpdateAsync(Playlist playlist, CancellationToken cancellationToken = default)
     {
-        dbContext.Playlists.Update(playlist);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

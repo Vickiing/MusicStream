@@ -3,15 +3,15 @@
     ViewData["Title"] = "Transacoes";
 }
 
-@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
-{
-    <div class="status">@Model.StatusMessage</div>
-}
+<div id="transactions-status" class="status" style="display:@(string.IsNullOrWhiteSpace(Model.StatusMessage) ? "none" : "block")">
+    @Model.StatusMessage
+</div>
 
-<div class="grid two">
+<div class="grid two" style="margin-top:16px;">
     <section class="panel">
-        <h2>Simular pagamento</h2>
-        <form asp-action="AuthorizeTransaction" method="post">
+        <h2>Concluir pagamento</h2>
+        <p class="muted">O sistema usa o horario atual automaticamente. O usuario so informa comerciante e valor.</p>
+        <form asp-action="AuthorizeTransaction" method="post" data-ajax-submit="true" data-status-target="#transactions-status">
             @Html.AntiForgeryToken()
             <select name="MerchantId">
                 @foreach (var merchant in Model.Merchants)
@@ -20,8 +20,7 @@
                 }
             </select>
             <input type="number" name="Amount" step="0.01" min="0.01" placeholder="Valor" />
-            <input type="datetime-local" name="RequestedAtUtc" />
-            <button type="submit">Autorizar</button>
+            <button type="submit">Concluir transacao</button>
         </form>
     </section>
 
@@ -33,22 +32,19 @@
         }
         else
         {
-            <div class="scroll-table">
-                <table>
-                    <thead>
-                        <tr><th>Status</th><th>Valor</th><th>Motivo</th></tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var item in Model.Transactions)
-                    {
-                        <tr>
-                            <td>@item.Status</td>
-                            <td>@item.Amount.ToString("C")</td>
-                            <td>@item.Reason</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
+            <div class="catalog-grid">
+                @foreach (var item in Model.Transactions.Take(6))
+                {
+                    <div class="catalog-card">
+                        <div class="catalog-card-top">
+                            <div>
+                                <strong>@item.Status</strong>
+                                <div class="muted">@item.Reason</div>
+                            </div>
+                            <span class="catalog-pill">@item.Amount.ToString("C")</span>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </section>

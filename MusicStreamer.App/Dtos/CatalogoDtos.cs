@@ -6,5 +6,15 @@ public sealed record AlbumDto(Guid Id, string Title, string ArtistName, int Rele
 
 public sealed record MusicaDto(Guid Id, string Title, string ArtistName, string AlbumTitle, int DurationSeconds);
 
-public sealed record ResultadoBuscaCatalogoDto(IReadOnlyList<BandaDto> Artists, IReadOnlyList<MusicaDto> Tracks);
+public sealed record ResultadoBuscaCatalogoDto(
+    IReadOnlyList<BandaDto> Artists,
+    IReadOnlyList<MusicaDto> Tracks,
+    int Page,
+    int PageSize,
+    int TotalTracks,
+    int TotalPages)
+{
+    public bool HasPreviousPage => Page > 1;
+    public bool HasNextPage => Page < TotalPages;
+}
 

@@ -49,6 +49,15 @@ public sealed class ServicoPlanosAssinatura(
             return null;
         }
 
+        if (user.SubscriptionPlanId.HasValue)
+        {
+            var currentPlan = await GetPlanByIdAsync(user.SubscriptionPlanId.Value, cancellationToken);
+            if (currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice)
+            {
+                return null;
+            }
+        }
+
         user.AssignSubscription(plan.Id);
         await userAccountRepository.UpdateAsync(user, cancellationToken);
 

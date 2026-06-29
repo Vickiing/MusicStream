@@ -38,10 +38,10 @@ public sealed class PainelController(
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> Search([FromQuery] string? term, [FromQuery] string? message, CancellationToken cancellationToken)
+    public async Task<IActionResult> Search([FromQuery] string? term, [FromQuery] int page = 1, [FromQuery] string? message = null, CancellationToken cancellationToken = default)
     {
         PrepareShell("Buscar", "search");
-        var model = await BuildModelAsync("search", cancellationToken, term, message);
+        var model = await BuildModelAsync("search", cancellationToken, term, page, message);
         return View(model);
     }
 
@@ -83,7 +83,10 @@ public sealed class PainelController(
             PlanName = plan.Name,
             MonthlyPrice = plan.MonthlyPrice,
             PaymentAmount = 50m,
-            StatusMessage = message
+            StatusMessage = currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice
+                ? $"Voce ja possui um plano igual ou superior a {currentPlan.Name}."
+                : message,
+            IsUpgradeAllowed = currentPlan is null || plan.MonthlyPrice > currentPlan.MonthlyPrice
         });
     }
 
@@ -115,12 +118,22 @@ public sealed class PainelController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChoosePlan(EscolherPlanoViewModel model, CancellationToken cancellationToken)
     {
-        RequireUser();
+        var user = RequireUser();
 
         var plan = await subscriptionService.GetPlanByIdAsync(model.PlanId, cancellationToken);
         if (plan is null)
         {
             return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+        }
+
+        if (user.SubscriptionPlanId.HasValue)
+        {
+            var currentPlans = await subscriptionService.GetPlansAsync(cancellationToken);
+            var currentPlan = currentPlans.FirstOrDefault(item => item.Id == user.SubscriptionPlanId.Value);
+            if (currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice)
+            {
+                return RedirectToAction(nameof(Plans), new { message = $"Voce ja possui um plano igual ou superior a {currentPlan.Name}." });
+            }
         }
 
         return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId });
@@ -137,15 +150,25 @@ public sealed class PainelController(
             return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
         }
 
+        var currentPlans = await subscriptionService.GetPlansAsync(cancellationToken);
+        var currentPlan = user.SubscriptionPlanId.HasValue
+            ? currentPlans.FirstOrDefault(item => item.Id == user.SubscriptionPlanId.Value)
+            : null;
+
+        if (currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice)
+        {
+            return RespondPlanPayment(model, plan, false, $"Voce ja possui um plano igual ou superior a {currentPlan.Name}.");
+        }
+
         if (model.PaymentAmount != 50m)
         {
-            return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId, message = "Valor invalido para a simulacao." });
+            return RespondPlanPayment(model, plan, false, "Valor invalido para a simulacao.");
         }
 
         var response = await subscriptionService.ChoosePlanAsync(new EscolherPlanoDto(user.UserId, model.PlanId), cancellationToken);
         if (response is null)
         {
-            return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId, message = "Nao foi possivel ativar o plano." });
+            return RespondPlanPayment(model, plan, false, "Nao foi possivel ativar o plano.");
         }
 
         HttpContext.Session.SetCurrentUser(new UsuarioSessaoViewModel
@@ -157,7 +180,7 @@ public sealed class PainelController(
             SubscriptionPlanId = model.PlanId
         });
 
-        return RedirectToAction(nameof(Plans), new { message = $"Pagamento simulado de R$50 concluido. Plano {plan.Name} ativado." });
+        return RespondPlanPayment(model, plan, true, $"Pagamento concluido. Plano {plan.Name} ativado.");
     }
 
     [HttpPost("playlists")]
@@ -179,7 +202,12 @@ public sealed class PainelController(
     public async Task<IActionResult> AddTrack(AdicionarMusicaNaPlaylistViewModel model, CancellationToken cancellationToken)
     {
         RequireUser();
-        await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
+        var playlist = await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
+        if (playlist is null)
+        {
+            return RedirectToAction(nameof(Playlists), new { message = "Nao foi possivel adicionar a musica." });
+        }
+
         return RedirectToAction(nameof(Playlists), new { message = "Musica associada a playlist." });
     }
 
@@ -224,24 +252,34 @@ public sealed class PainelController(
     public async Task<IActionResult> AuthorizeTransaction(AutorizarTransacaoViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
-        await transactionService.AuthorizeAsync(
-            new AutorizarTransacaoDto(user.UserId, model.MerchantId, model.Amount, model.RequestedAtUtc ?? DateTimeOffset.UtcNow),
+        var result = await transactionService.AuthorizeAsync(
+            new AutorizarTransacaoDto(user.UserId, model.MerchantId, model.Amount, DateTimeOffset.UtcNow),
             cancellationToken);
 
-        return RedirectToAction(nameof(Transactions), new { message = "Transacao simulada com sucesso." });
+        if (Request.IsJsonRequest())
+        {
+            return Ok(new
+            {
+                success = result is not null,
+                message = result is null ? "Nao foi possivel processar a transacao." : "Transacao concluida."
+            });
+        }
+
+        return RedirectToAction(nameof(Transactions), new { message = "Transacao concluida." });
     }
 
     private async Task<PainelViewModel> BuildModelAsync(
         string activeSection,
         CancellationToken cancellationToken,
         string? term = null,
+        int page = 1,
         string? message = null)
     {
         var user = RequireUser();
         ResultadoBuscaCatalogoDto? searchResult = null;
         if (!string.IsNullOrWhiteSpace(term))
         {
-            searchResult = await catalogService.SearchAsync(term, cancellationToken);
+            searchResult = await catalogService.SearchAsync(term, page, 10, cancellationToken);
         }
 
         var plans = await subscriptionService.GetPlansAsync(cancellationToken);
@@ -271,7 +309,10 @@ public sealed class PainelController(
             SearchResult = searchResult,
             Favorites = await favoritesService.GetByUserAsync(user.UserId, cancellationToken),
             HasActiveSubscription = currentPlan is not null,
-            CurrentPlanName = currentPlan?.Name ?? string.Empty
+            CurrentPlanName = currentPlan?.Name ?? string.Empty,
+            CurrentPlanMonthlyPrice = currentPlan?.MonthlyPrice ?? 0m,
+            SearchPage = searchResult?.Page ?? page,
+            SearchPageSize = searchResult?.PageSize ?? 10
         };
     }
 
@@ -291,5 +332,37 @@ public sealed class PainelController(
         }
 
         return user;
+    }
+
+    private IActionResult RespondPlanPayment(PagamentoPlanoViewModel model, PlanoAssinaturaDto plan, bool success, string message)
+    {
+        if (Request.IsJsonRequest())
+        {
+            return Ok(new
+            {
+                success,
+                message,
+                planId = plan.Id,
+                planName = plan.Name,
+                hasActiveSubscription = success,
+                currentPlanName = success ? plan.Name : string.Empty
+            });
+        }
+
+        return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId, message });
+    }
+}
+
+file static class HttpRequestExtensions
+{
+    public static bool IsJsonRequest(this HttpRequest request)
+    {
+        if (request.Headers.TryGetValue("X-Requested-With", out var requestedWith) && requestedWith == "fetch")
+        {
+            return true;
+        }
+
+        return request.Headers.TryGetValue("Accept", out var acceptValues)
+            && acceptValues.Any(value => value?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true);
     }
 }

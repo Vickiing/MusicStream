@@ -10,7 +10,8 @@
 
 <div class="grid two">
     <section class="panel">
-        <h2>Nova playlist</h2>
+        <h2>Criar playlist</h2>
+        <p class="muted">Dica: crie a playlist primeiro e depois adicione musicas diretamente no card dela.</p>
         <form asp-action="CreatePlaylist" method="post">
             @Html.AntiForgeryToken()
             <input type="text" name="Name" placeholder="Nome da playlist" />
@@ -19,53 +20,73 @@
     </section>
 
     <section class="panel">
-        <h2>Adicionar musica</h2>
-        <form asp-action="AddTrack" method="post">
-            @Html.AntiForgeryToken()
-            <select name="PlaylistId">
-                @foreach (var playlist in Model.Playlists)
-                {
-                    <option value="@playlist.Id">@playlist.Name</option>
-                }
-            </select>
-            <select name="TrackId">
-                @foreach (var track in Model.Tracks)
-                {
-                    <option value="@track.Id">@track.Title - @track.ArtistName</option>
-                }
-            </select>
-            <button type="submit">Adicionar</button>
-        </form>
+        <h2>Como funciona</h2>
+        <p class="muted">
+            Cada playlist aparece abaixo com um seletor de musicas proprio, para evitar campos confusos ou soltos na tela.
+        </p>
     </section>
 </div>
 
-<section class="panel" style="margin-top:16px;">
-    <h2>Playlists criadas</h2>
+<section style="margin-top:16px;" class="grid">
+    <h2>Suas playlists</h2>
+
     @if (!Model.Playlists.Any())
     {
-        <p class="muted">Sem playlists.</p>
+        <section class="panel">
+            <p class="muted">Sem playlists ainda. Crie a primeira acima.</p>
+        </section>
     }
     else
     {
         <div class="grid two">
             @foreach (var playlist in Model.Playlists)
             {
-                <div class="panel" style="background: var(--surface-2);">
-                    <strong>@playlist.Name</strong>
-                    <div class="muted">@playlist.Tracks.Count musicas</div>
-                    @if (playlist.Tracks.Any())
-                    {
-                        <ul class="item-list" style="margin-top:12px;">
-                            @foreach (var track in playlist.Tracks)
-                            {
-                                <li class="item-row">
-                                    <span>@track.Title</span>
-                                    <span class="muted">@track.ArtistName</span>
-                                </li>
-                            }
-                        </ul>
-                    }
-                </div>
+                <section class="panel">
+                    <div class="player-top">
+                        <div>
+                            <h3>@playlist.Name</h3>
+                            <div class="muted">@playlist.Tracks.Count musica(s)</div>
+                        </div>
+                        <span class="catalog-pill">Playlist</span>
+                    </div>
+
+                    <div class="stack" style="margin-top:12px;">
+                        @if (playlist.Tracks.Any())
+                        {
+                            <div class="catalog-grid">
+                                @foreach (var track in playlist.Tracks)
+                                {
+                                    <div class="catalog-card">
+                                        <div class="catalog-card-top">
+                                            <div>
+                                                <strong>@track.Title</strong>
+                                                <div class="muted">@track.ArtistName • @track.AlbumTitle</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="muted">Ainda sem musicas.</p>
+                        }
+
+                        <form asp-action="AddTrack" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="PlaylistId" value="@playlist.Id" />
+                            <label>Adicionar musica</label>
+                            <select name="TrackId">
+                                <option value="">Selecione uma musica</option>
+                                @foreach (var track in Model.Tracks)
+                                {
+                                    <option value="@track.Id">@track.Title - @track.ArtistName</option>
+                                }
+                            </select>
+                            <button type="submit">Adicionar</button>
+                        </form>
+                    </div>
+                </section>
             }
         </div>
     }

@@ -15,42 +15,48 @@
     </div>
 }
 
-<section class="panel" style="margin-bottom:16px;">
+<section class="panel" style="margin:16px 0;">
     <div class="chip">Assinatura</div>
     <h1 style="margin-top:10px;">Escolha um plano para liberar as musicas</h1>
     <p class="muted" style="max-width: 760px;">
-        Selecione uma opcao de assinatura e siga para a tela de pagamento. A confirmacao usa um valor fixo de R$50
-        para ativar o acesso ao player.
+        Cada plano libera a experiencia do player. A confirmacao usa um pagamento fixo de R$50 para a demonstracao e
+        atualiza a assinatura imediatamente.
     </p>
 </section>
 
 <section class="grid two">
     @foreach (var plan in Model.Plans)
     {
+        var canChoose = !Model.HasActiveSubscription || plan.MonthlyPrice > Model.CurrentPlanMonthlyPrice;
         <div class="panel">
-            <div class="chip">Plano</div>
-            <h2 style="margin-top:10px;">@plan.Name</h2>
-            <div class="muted">Mensalidade: @plan.MonthlyPrice.ToString("C")</div>
-            <div class="muted">Limite de transacao: @plan.MaxTransactionAmount.ToString("C")</div>
-            <div class="muted">Acesso noturno: @(plan.AllowsNightTransactions ? "Liberado" : "Bloqueado")</div>
+            <div class="player-top">
+                <div>
+                    <h2>@plan.Name</h2>
+                    <div class="muted">@plan.MonthlyPrice.ToString("C") por mes</div>
+                </div>
+                @if (!canChoose && Model.HasActiveSubscription && plan.MonthlyPrice == Model.CurrentPlanMonthlyPrice)
+                {
+                    <span class="catalog-pill">Atual</span>
+                }
+            </div>
 
             <div class="stack" style="margin-top:14px;">
-                <div class="summary-item">
-                    <span class="muted">Experiencia do plano</span>
-                    <strong>@(plan.AllowsNightTransactions ? "Uso completo, inclusive a noite" : "Uso essencial para a demonstracao")</strong>
-                </div>
-
-                <form asp-action="ChoosePlan" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="PlanId" value="@plan.Id" />
-                    <button type="submit">Ir para pagamento</button>
-                </form>
+                <div class="muted">Limite de transacao: @plan.MaxTransactionAmount.ToString("C")</div>
+                <div class="muted">Acesso noturno: @(plan.AllowsNightTransactions ? "Liberado" : "Bloqueado")</div>
             </div>
+
+            <form asp-action="ChoosePlan" method="post" style="margin-top:16px;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="PlanId" value="@plan.Id" />
+                @if (canChoose)
+                {
+                    <button type="submit">Escolher plano</button>
+                }
+                else
+                {
+                    <button type="submit" disabled>Plano indisponivel</button>
+                }
+            </form>
         </div>
     }
-</section>
-
-<section class="panel" style="margin-top:16px;">
-    <strong>Fluxo esperado</strong>
-    <p class="muted" style="margin:8px 0 0;">1. Escolher o plano. 2. Confirmar o pagamento de R$50. 3. Liberar o player e continuar navegando.</p>
 </section>

@@ -9,6 +9,6 @@ public interface ICatalogoRepository
     Task<IReadOnlyList<Musica>> GetTracksAsync(CancellationToken cancellationToken = default);
     Task<Banda?> GetArtistByIdAsync(Guid artistId, CancellationToken cancellationToken = default);
     Task<Musica?> GetTrackByIdAsync(Guid trackId, CancellationToken cancellationToken = default);
-    Task<ResultadoBuscaCatalogo> SearchAsync(string term, CancellationToken cancellationToken = default);
+    Task<ResultadoBuscaCatalogo> SearchAsync(string term, int page, int pageSize, CancellationToken cancellationToken = default);
 }
 

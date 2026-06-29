@@ -5,52 +5,69 @@
 
 <div class="grid two">
     <section class="panel">
-        <h2>Bandas</h2>
-        <ul class="item-list">
+        <div class="player-top" style="margin-bottom:12px;">
+            <h2>Bandas</h2>
+            <span class="muted">@Model.Artists.Count</span>
+        </div>
+        <div class="catalog-grid">
             @foreach (var artist in Model.Artists)
             {
-                <li class="item-row">
-                    <span>@artist.Name</span>
-                    <span class="muted">@artist.Id</span>
-                </li>
+                <a class="catalog-card" asp-action="Search" asp-route-term="@artist.Name">
+                    <div class="catalog-card-top">
+                        <div>
+                            <strong>@artist.Name</strong>
+                            <div class="muted">Abrir busca desta banda</div>
+                        </div>
+                        <span class="catalog-pill">Ver</span>
+                    </div>
+                </a>
             }
-        </ul>
+        </div>
     </section>
 
     <section class="panel">
-        <h2>Albuns</h2>
-        <div class="scroll-table">
-            <table>
-                <thead>
-                    <tr><th>Album</th><th>Banda</th><th>Ano</th></tr>
-                </thead>
-                <tbody>
-                @foreach (var album in Model.Albums)
-                {
-                    <tr>
-                        <td>@album.Title</td>
-                        <td>@album.ArtistName</td>
-                        <td>@album.ReleaseYear</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+        <div class="player-top" style="margin-bottom:12px;">
+            <h2>Albuns</h2>
+            <span class="muted">@Model.Albums.Count</span>
+        </div>
+        <div class="catalog-grid">
+            @foreach (var album in Model.Albums)
+            {
+                <a class="catalog-card" asp-action="Search" asp-route-term="@album.Title">
+                    <div class="catalog-card-top">
+                        <div>
+                            <strong>@album.Title</strong>
+                            <div class="muted">@album.ArtistName • @album.ReleaseYear</div>
+                        </div>
+                        <span class="catalog-pill">Album</span>
+                    </div>
+                </a>
+            }
         </div>
     </section>
 </div>
 
 <section class="panel" style="margin-top:16px;">
-    <h2>Musicas</h2>
-    <ul class="item-list">
+    <div class="player-top" style="margin-bottom:12px;">
+        <h2>Musicas</h2>
+        <span class="muted">@Model.Tracks.Count</span>
+    </div>
+    <div class="catalog-grid">
         @foreach (var track in Model.Tracks)
         {
-            <li class="item-row">
-                <div>
-                    <strong>@track.Title</strong>
-                    <div class="muted">@track.ArtistName - @track.AlbumTitle</div>
+            <div class="catalog-card">
+                <div class="catalog-card-top">
+                    <div>
+                        <strong>@track.Title</strong>
+                        <div class="muted">@track.ArtistName • @track.AlbumTitle</div>
+                    </div>
+                    <span class="catalog-pill">@(track.DurationSeconds / 60)m</span>
                 </div>
-                <span class="muted">@track.DurationSeconds s</span>
-            </li>
+                <div class="catalog-card-actions">
+                    <a class="chip" asp-action="Search" asp-route-term="@track.ArtistName">Abrir banda</a>
+                    <a class="chip" asp-action="Search" asp-route-term="@track.Title">Buscar musica</a>
+                </div>
+            </div>
         }
-    </ul>
+    </div>
 </section>

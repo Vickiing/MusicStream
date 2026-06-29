@@ -1,12 +1,15 @@
 @model PainelViewModel
 @{
     ViewData["Title"] = "Buscar";
+    var result = Model.SearchResult;
+    var currentPage = result?.Page ?? 1;
+    var totalPages = result?.TotalPages ?? 0;
 }
 
 <section class="panel">
     <h2>Buscar musicas e bandas</h2>
     <form asp-action="Search" method="get" class="inline-form">
-        <input type="text" name="term" value="@Model.SearchTerm" placeholder="Digite uma banda ou musica" />
+        <input type="text" name="term" value="@Model.SearchTerm" placeholder="Digite uma banda, album ou musica" />
         <button type="submit">Buscar</button>
     </form>
 </section>
@@ -16,63 +19,96 @@
     <div class="status" style="margin-top:16px;">@Model.StatusMessage</div>
 }
 
-@if (Model.SearchResult is not null)
+@if (result is not null)
 {
-    <div class="grid two" style="margin-top:16px;">
-        <section class="panel">
-            <h3>Bandas</h3>
-            @if (!Model.SearchResult.Artists.Any())
+    <section style="margin-top:16px;" class="grid">
+        <div class="panel">
+            <h3>Bandas encontradas</h3>
+            @if (!result.Artists.Any())
             {
-                <p class="muted">Sem bandas.</p>
+                <p class="muted">Nenhuma banda encontrada.</p>
             }
             else
             {
-                <div class="stack">
-                    @foreach (var artist in Model.SearchResult.Artists)
+                <div class="catalog-grid">
+                    @foreach (var artist in result.Artists)
                     {
-                        <div class="item-row">
-                            <div>
-                                <strong>@artist.Name</strong>
-                                <div class="muted">@artist.Id</div>
+                        <div class="catalog-card">
+                            <div class="catalog-card-top">
+                                <div>
+                                    <strong>@artist.Name</strong>
+                                    <div class="muted">Bandas relacionadas a sua busca</div>
+                                </div>
+                                <span class="catalog-pill">Banda</span>
                             </div>
-                            <form asp-action="FavoriteArtist" method="post" class="inline-form">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="ArtistId" value="@artist.Id" />
-                                <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
-                                <button type="submit">Favoritar</button>
-                            </form>
+                            <div class="catalog-card-actions">
+                                <a class="chip" asp-action="Search" asp-route-term="@artist.Name">Ver musicas</a>
+                                <form asp-action="FavoriteArtist" method="post" class="inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="ArtistId" value="@artist.Id" />
+                                    <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                    <button type="submit" class="secondary">Favoritar</button>
+                                </form>
+                            </div>
                         </div>
                     }
                 </div>
             }
-        </section>
+        </div>
 
-        <section class="panel">
-            <h3>Musicas</h3>
-            @if (!Model.SearchResult.Tracks.Any())
+        <div class="panel">
+            <div class="player-top" style="margin-bottom:12px;">
+                <h3>Musicas encontradas</h3>
+                <span class="muted">@result.TotalTracks resultado(s)</span>
+            </div>
+
+            @if (!result.Tracks.Any())
             {
-                <p class="muted">Sem musicas.</p>
+                <p class="muted">Nenhuma musica encontrada.</p>
             }
             else
             {
-                <div class="stack">
-                    @foreach (var track in Model.SearchResult.Tracks)
+                <div class="catalog-grid">
+                    @foreach (var track in result.Tracks)
                     {
-                        <div class="item-row">
-                            <div>
-                                <strong>@track.Title</strong>
-                                <div class="muted">@track.ArtistName</div>
+                        <div class="catalog-card">
+                            <div class="catalog-card-top">
+                                <div>
+                                    <strong>@track.Title</strong>
+                                    <div class="muted">@track.ArtistName - @track.AlbumTitle</div>
+                                </div>
+                                <span class="catalog-pill">@((track.DurationSeconds / 60).ToString())m</span>
                             </div>
-                            <form asp-action="FavoriteTrack" method="post" class="inline-form">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="TrackId" value="@track.Id" />
-                                <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
-                                <button type="submit">Favoritar</button>
-                            </form>
+                            <div class="catalog-card-actions">
+                                <form asp-action="FavoriteTrack" method="post" class="inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="TrackId" value="@track.Id" />
+                                    <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                    <button type="submit">Favoritar</button>
+                                </form>
+                                <a class="chip" asp-action="Search" asp-route-term="@track.Title">Buscar semelhante</a>
+                            </div>
                         </div>
                     }
                 </div>
+
+                @if (totalPages > 1)
+                {
+                    <div class="pager">
+                        @if (result.HasPreviousPage)
+                        {
+                            <a class="chip" asp-action="Search" asp-route-term="@Model.SearchTerm" asp-route-page="@(currentPage - 1)">Anterior</a>
+                        }
+
+                        <span class="chip">Página @currentPage de @totalPages</span>
+
+                        @if (result.HasNextPage)
+                        {
+                            <a class="chip" asp-action="Search" asp-route-term="@Model.SearchTerm" asp-route-page="@(currentPage + 1)">Próxima</a>
+                        }
+                    </div>
+                }
             }
-        </section>
-    </div>
+        </div>
+    </section>
 }

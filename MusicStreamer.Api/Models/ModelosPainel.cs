@@ -13,6 +13,7 @@ public sealed class PainelViewModel
     public string ActiveSection { get; init; } = "home";
     public bool HasActiveSubscription { get; init; }
     public string CurrentPlanName { get; init; } = string.Empty;
+    public decimal CurrentPlanMonthlyPrice { get; init; }
     public IReadOnlyList<BandaDto> Artists { get; init; } = [];
     public IReadOnlyList<AlbumDto> Albums { get; init; } = [];
     public IReadOnlyList<MusicaDto> Tracks { get; init; } = [];
@@ -22,6 +23,8 @@ public sealed class PainelViewModel
     public IReadOnlyList<ResultadoTransacaoDto> Transactions { get; init; } = [];
     public ResultadoBuscaCatalogoDto? SearchResult { get; init; }
     public ResumoFavoritosDto Favorites { get; init; } = new(Guid.Empty, [], []);
+    public int SearchPage { get; init; } = 1;
+    public int SearchPageSize { get; init; } = 10;
 }
 
 public sealed class UsuarioSessaoViewModel
@@ -45,6 +48,7 @@ public sealed class PagamentoPlanoViewModel
     public decimal MonthlyPrice { get; set; }
     public decimal PaymentAmount { get; set; } = 50m;
     public string? StatusMessage { get; set; }
+    public bool IsUpgradeAllowed { get; set; } = true;
 }
 
 public sealed class CriarPlaylistViewModel
@@ -57,6 +61,7 @@ public sealed class AdicionarMusicaNaPlaylistViewModel
 {
     public Guid PlaylistId { get; set; }
     public Guid TrackId { get; set; }
+    public string PlaylistName { get; set; } = string.Empty;
 }
 
 public sealed class MusicaFavoritaViewModel
@@ -75,6 +80,6 @@ public sealed class AutorizarTransacaoViewModel
 {
     public Guid MerchantId { get; set; }
     public decimal Amount { get; set; }
-    public DateTimeOffset? RequestedAtUtc { get; set; }
+    public string? StatusMessage { get; set; }
 }
 

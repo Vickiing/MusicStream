@@ -21,14 +21,14 @@ public sealed class CatalogoController(IServicoCatalogo servicoCatalogo) : Contr
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<ResultadoBuscaCatalogoDto>> Search([FromQuery] string term, CancellationToken cancellationToken)
+    public async Task<ActionResult<ResultadoBuscaCatalogoDto>> Search([FromQuery] string term, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(term))
         {
             return BadRequest("Informe um termo para busca.");
         }
 
-        return Ok(await servicoCatalogo.SearchAsync(term, cancellationToken));
+        return Ok(await servicoCatalogo.SearchAsync(term, page, pageSize, cancellationToken));
     }
 }
 

@@ -47,7 +47,7 @@ public sealed class CatalogoRepository(MusicStreamerDbContext dbContext) : ICata
             .FirstOrDefaultAsync(item => item.Id == trackId, cancellationToken);
     }
 
-    public async Task<ResultadoBuscaCatalogo> SearchAsync(string term, CancellationToken cancellationToken = default)
+    public async Task<ResultadoBuscaCatalogo> SearchAsync(string term, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var normalizedTerm = term.Trim().ToUpperInvariant();
 
@@ -55,21 +55,30 @@ public sealed class CatalogoRepository(MusicStreamerDbContext dbContext) : ICata
             .AsNoTracking()
             .Where(item => item.NormalizedName.StartsWith(normalizedTerm))
             .OrderBy(item => item.Name)
-            .Take(10)
+            .Take(6)
             .Select(item => new BandaBuscaCatalogo(item.Id, item.Name))
             .ToListAsync(cancellationToken);
 
-        var tracks = await dbContext.MusicTracks
+        var tracksQuery = dbContext.MusicTracks
             .AsNoTracking()
             .Include(item => item.Banda)
             .Include(item => item.Album)
-            .Where(item => item.NormalizedTitle.StartsWith(normalizedTerm) || item.Banda.NormalizedName.StartsWith(normalizedTerm))
+            .Where(item => item.NormalizedTitle.StartsWith(normalizedTerm)
+                || item.Banda.NormalizedName.StartsWith(normalizedTerm)
+                || item.Album.NormalizedTitle.StartsWith(normalizedTerm));
+
+        var totalTracks = await tracksQuery.CountAsync(cancellationToken);
+        var sanitizedPageSize = pageSize <= 0 ? 10 : pageSize;
+        var sanitizedPage = page <= 0 ? 1 : page;
+
+        var tracks = await tracksQuery
             .OrderBy(item => item.Title)
-            .Take(10)
+            .Skip((sanitizedPage - 1) * sanitizedPageSize)
+            .Take(sanitizedPageSize)
             .Select(item => new MusicaBuscaCatalogo(item.Id, item.Title, item.Banda.Name, item.Album.Title, item.DurationSeconds))
             .ToListAsync(cancellationToken);
 
-        return new ResultadoBuscaCatalogo(artists, tracks);
+        return new ResultadoBuscaCatalogo(artists, tracks, sanitizedPage, sanitizedPageSize, totalTracks);
     }
 }
 
