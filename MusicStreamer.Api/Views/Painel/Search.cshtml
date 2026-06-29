@@ -1,4 +1,4 @@
-@model PainelViewModel
+﻿@model PainelViewModel
 @{
     ViewData["Title"] = "Buscar";
     var result = Model.SearchResult;
@@ -7,9 +7,9 @@
 }
 
 <section class="panel">
-    <h2>Buscar musicas e bandas</h2>
+    <h2>Buscar músicas e bandas</h2>
     <form asp-action="Search" method="get" class="inline-form">
-        <input type="text" name="term" value="@Model.SearchTerm" placeholder="Digite uma banda, album ou musica" />
+        <input type="text" name="term" value="@Model.SearchTerm" placeholder="Digite uma banda, álbum ou música" />
         <button type="submit">Buscar</button>
     </form>
 </section>
@@ -37,12 +37,12 @@
                             <div class="catalog-card-top">
                                 <div>
                                     <strong>@artist.Name</strong>
-                                    <div class="muted">Bandas relacionadas a sua busca</div>
+                                    <div class="muted">Bandas relacionadas à sua busca</div>
                                 </div>
                                 <span class="catalog-pill">Banda</span>
                             </div>
                             <div class="catalog-card-actions">
-                                <a class="chip" asp-action="Search" asp-route-term="@artist.Name">Ver musicas</a>
+                                <a class="chip" asp-action="Search" asp-route-term="@artist.Name">Ver músicas</a>
                                 <form asp-action="FavoriteArtist" method="post" class="inline-form">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="ArtistId" value="@artist.Id" />
@@ -58,13 +58,13 @@
 
         <div class="panel">
             <div class="player-top" style="margin-bottom:12px;">
-                <h3>Musicas encontradas</h3>
+                <h3>Músicas encontradas</h3>
                 <span class="muted">@result.TotalTracks resultado(s)</span>
             </div>
 
             @if (!result.Tracks.Any())
             {
-                <p class="muted">Nenhuma musica encontrada.</p>
+                <p class="muted">Nenhuma música encontrada.</p>
             }
             else
             {
@@ -75,7 +75,7 @@
                             <div class="catalog-card-top">
                                 <div>
                                     <strong>@track.Title</strong>
-                                    <div class="muted">@track.ArtistName - @track.AlbumTitle</div>
+                                    <div class="muted">@track.ArtistName • @track.AlbumTitle</div>
                                 </div>
                                 <span class="catalog-pill">@((track.DurationSeconds / 60).ToString())m</span>
                             </div>

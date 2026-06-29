@@ -1,4 +1,4 @@
-@model PagamentoPlanoViewModel
+﻿@model PagamentoPlanoViewModel
 @{
     ViewData["Title"] = "Pagamento";
     var paymentAmountText = Model.PaymentAmount.ToString("C");
@@ -10,10 +10,10 @@
 </div>
 
 <section class="panel" style="margin:16px 0;">
-    <div class="chip">Pagamento de ativacao</div>
+    <div class="chip">Pagamento de ativação</div>
     <h1 style="margin-top:10px;">Finalize a assinatura de @Model.PlanName</h1>
     <p class="muted" style="max-width: 760px;">
-        O valor fixo de R$50 apenas simula a confirmacao da compra. Ao concluir, a assinatura passa a valer
+        O valor fixo de R$50 apenas simula a confirmação da compra. Ao concluir, a assinatura passa a valer
         imediatamente no layout e no player.
     </p>
 </section>
@@ -31,7 +31,7 @@
                 <strong>@monthlyPriceText</strong>
             </div>
             <div class="summary-item">
-                <span class="muted">Valor da transacao</span>
+                <span class="muted">Valor da transação</span>
                 <strong>@paymentAmountText</strong>
             </div>
         </div>
@@ -58,7 +58,7 @@
             }
             else
             {
-                <button type="submit" disabled>Plano indisponivel</button>
+                <button type="submit" disabled>Plano indisponível</button>
             }
         </form>
     </section>

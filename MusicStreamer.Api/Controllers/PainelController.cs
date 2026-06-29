@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicStreamer.Api.Extensions;
 using MusicStreamer.Api.Models;
 using MusicStreamer.App.Contracts;
@@ -24,7 +24,7 @@ public sealed class PainelController(
     [HttpGet("home")]
     public async Task<IActionResult> Home(CancellationToken cancellationToken)
     {
-        PrepareShell("Inicio", "home");
+        PrepareShell("Início", "home");
         var model = await BuildModelAsync("home", cancellationToken);
         return View(model);
     }
@@ -32,7 +32,7 @@ public sealed class PainelController(
     [HttpGet("catalog")]
     public async Task<IActionResult> Catalog(CancellationToken cancellationToken)
     {
-        PrepareShell("Catalogo", "catalog");
+        PrepareShell("Catálogo", "catalog");
         var model = await BuildModelAsync("catalog", cancellationToken);
         return View(model);
     }
@@ -62,7 +62,7 @@ public sealed class PainelController(
         var plan = await subscriptionService.GetPlanByIdAsync(planId, cancellationToken);
         if (plan is null)
         {
-            return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+            return RedirectToAction(nameof(Plans), new { message = "Plano não encontrado." });
         }
 
         var plans = await subscriptionService.GetPlansAsync(cancellationToken);
@@ -84,7 +84,7 @@ public sealed class PainelController(
             MonthlyPrice = plan.MonthlyPrice,
             PaymentAmount = 50m,
             StatusMessage = currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice
-                ? $"Voce ja possui um plano igual ou superior a {currentPlan.Name}."
+                ? $"Você já possui um plano igual ou superior a {currentPlan.Name}."
                 : message,
             IsUpgradeAllowed = currentPlan is null || plan.MonthlyPrice > currentPlan.MonthlyPrice
         });
@@ -109,7 +109,7 @@ public sealed class PainelController(
     [HttpGet("transactions")]
     public async Task<IActionResult> Transactions([FromQuery] string? message, CancellationToken cancellationToken)
     {
-        PrepareShell("Transacoes", "transactions");
+        PrepareShell("Transações", "transactions");
         var model = await BuildModelAsync("transactions", cancellationToken, message: message);
         return View(model);
     }
@@ -123,7 +123,7 @@ public sealed class PainelController(
         var plan = await subscriptionService.GetPlanByIdAsync(model.PlanId, cancellationToken);
         if (plan is null)
         {
-            return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+            return RedirectToAction(nameof(Plans), new { message = "Plano não encontrado." });
         }
 
         if (user.SubscriptionPlanId.HasValue)
@@ -132,7 +132,7 @@ public sealed class PainelController(
             var currentPlan = currentPlans.FirstOrDefault(item => item.Id == user.SubscriptionPlanId.Value);
             if (currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice)
             {
-                return RedirectToAction(nameof(Plans), new { message = $"Voce ja possui um plano igual ou superior a {currentPlan.Name}." });
+                return RedirectToAction(nameof(Plans), new { message = $"Você já possui um plano igual ou superior a {currentPlan.Name}." });
             }
         }
 
@@ -147,7 +147,7 @@ public sealed class PainelController(
         var plan = await subscriptionService.GetPlanByIdAsync(model.PlanId, cancellationToken);
         if (plan is null)
         {
-            return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+            return RedirectToAction(nameof(Plans), new { message = "Plano não encontrado." });
         }
 
         var currentPlans = await subscriptionService.GetPlansAsync(cancellationToken);
@@ -157,18 +157,18 @@ public sealed class PainelController(
 
         if (currentPlan is not null && plan.MonthlyPrice <= currentPlan.MonthlyPrice)
         {
-            return RespondPlanPayment(model, plan, false, $"Voce ja possui um plano igual ou superior a {currentPlan.Name}.");
+            return RespondPlanPayment(model, plan, false, $"Você já possui um plano igual ou superior a {currentPlan.Name}.");
         }
 
         if (model.PaymentAmount != 50m)
         {
-            return RespondPlanPayment(model, plan, false, "Valor invalido para a simulacao.");
+            return RespondPlanPayment(model, plan, false, "Valor inválido para a simulação.");
         }
 
         var response = await subscriptionService.ChoosePlanAsync(new EscolherPlanoDto(user.UserId, model.PlanId), cancellationToken);
         if (response is null)
         {
-            return RespondPlanPayment(model, plan, false, "Nao foi possivel ativar o plano.");
+            return RespondPlanPayment(model, plan, false, "Não foi possível ativar o plano.");
         }
 
         HttpContext.Session.SetCurrentUser(new UsuarioSessaoViewModel
@@ -180,7 +180,7 @@ public sealed class PainelController(
             SubscriptionPlanId = model.PlanId
         });
 
-        return RespondPlanPayment(model, plan, true, $"Pagamento concluido. Plano {plan.Name} ativado.");
+        return RespondPlanPayment(model, plan, true, $"Pagamento concluído. Plano {plan.Name} ativado.");
     }
 
     [HttpPost("playlists")]
@@ -205,10 +205,10 @@ public sealed class PainelController(
         var playlist = await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
         if (playlist is null)
         {
-            return RedirectToAction(nameof(Playlists), new { message = "Nao foi possivel adicionar a musica." });
+            return RedirectToAction(nameof(Playlists), new { message = "Não foi possível adicionar a música." });
         }
 
-        return RedirectToAction(nameof(Playlists), new { message = "Musica associada a playlist." });
+        return RedirectToAction(nameof(Playlists), new { message = "Música associada à playlist." });
     }
 
     [HttpPost("favorites/tracks")]
@@ -217,7 +217,7 @@ public sealed class PainelController(
     {
         var user = RequireUser();
         await favoritesService.FavoriteTrackAsync(user.UserId, model.TrackId, cancellationToken);
-        return RedirectToAction(nameof(Search), new { term = model.SearchTerm, message = "Musica favoritada." });
+        return RedirectToAction(nameof(Search), new { term = model.SearchTerm, message = "Música favoritada." });
     }
 
     [HttpPost("favorites/tracks/remove")]
@@ -226,7 +226,7 @@ public sealed class PainelController(
     {
         var user = RequireUser();
         await favoritesService.UnfavoriteTrackAsync(user.UserId, model.TrackId, cancellationToken);
-        return RedirectToAction(nameof(Favorites), new { message = "Musica removida dos favoritos." });
+        return RedirectToAction(nameof(Favorites), new { message = "Música removida dos favoritos." });
     }
 
     [HttpPost("favorites/artists")]
@@ -261,11 +261,11 @@ public sealed class PainelController(
             return Ok(new
             {
                 success = result is not null,
-                message = result is null ? "Nao foi possivel processar a transacao." : "Transacao concluida."
+                message = result is null ? "Não foi possível processar a transação." : "Transação concluída."
             });
         }
 
-        return RedirectToAction(nameof(Transactions), new { message = "Transacao concluida." });
+        return RedirectToAction(nameof(Transactions), new { message = "Transação concluída." });
     }
 
     private async Task<PainelViewModel> BuildModelAsync(
@@ -328,7 +328,7 @@ public sealed class PainelController(
         var user = HttpContext.Session.GetCurrentUser();
         if (user is null)
         {
-            throw new InvalidOperationException("Sessao nao autenticada.");
+            throw new InvalidOperationException("Sessão não autenticada.");
         }
 
         return user;

@@ -1,4 +1,4 @@
-@model PainelViewModel
+﻿@model PainelViewModel
 @{
     ViewData["Title"] = "Playlists";
 }
@@ -11,7 +11,7 @@
 <div class="grid two">
     <section class="panel">
         <h2>Criar playlist</h2>
-        <p class="muted">Dica: crie a playlist primeiro e depois adicione musicas diretamente no card dela.</p>
+        <p class="muted">Dica: crie a playlist primeiro e depois adicione músicas diretamente no card dela.</p>
         <form asp-action="CreatePlaylist" method="post">
             @Html.AntiForgeryToken()
             <input type="text" name="Name" placeholder="Nome da playlist" />
@@ -22,7 +22,7 @@
     <section class="panel">
         <h2>Como funciona</h2>
         <p class="muted">
-            Cada playlist aparece abaixo com um seletor de musicas proprio, para evitar campos confusos ou soltos na tela.
+            Cada playlist aparece abaixo com um seletor de músicas proprio, para evitar campos confusos ou soltos na tela.
         </p>
     </section>
 </div>
@@ -45,7 +45,7 @@
                     <div class="player-top">
                         <div>
                             <h3>@playlist.Name</h3>
-                            <div class="muted">@playlist.Tracks.Count musica(s)</div>
+                            <div class="muted">@playlist.Tracks.Count música(s)</div>
                         </div>
                         <span class="catalog-pill">Playlist</span>
                     </div>
@@ -69,15 +69,15 @@
                         }
                         else
                         {
-                            <p class="muted">Ainda sem musicas.</p>
+                            <p class="muted">Ainda sem músicas.</p>
                         }
 
                         <form asp-action="AddTrack" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="PlaylistId" value="@playlist.Id" />
-                            <label>Adicionar musica</label>
+                            <label>Adicionar música</label>
                             <select name="TrackId">
-                                <option value="">Selecione uma musica</option>
+                                <option value="">Selecione uma música</option>
                                 @foreach (var track in Model.Tracks)
                                 {
                                     <option value="@track.Id">@track.Title - @track.ArtistName</option>

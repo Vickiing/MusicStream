@@ -1,6 +1,6 @@
-@model PainelViewModel
+﻿@model PainelViewModel
 @{
-    ViewData["Title"] = "Catalogo";
+    ViewData["Title"] = "Catálogo";
 }
 
 <div class="grid two">
@@ -27,7 +27,7 @@
 
     <section class="panel">
         <div class="player-top" style="margin-bottom:12px;">
-            <h2>Albuns</h2>
+            <h2>Álbuns</h2>
             <span class="muted">@Model.Albums.Count</span>
         </div>
         <div class="catalog-grid">
@@ -39,7 +39,7 @@
                             <strong>@album.Title</strong>
                             <div class="muted">@album.ArtistName • @album.ReleaseYear</div>
                         </div>
-                        <span class="catalog-pill">Album</span>
+                        <span class="catalog-pill">Álbum</span>
                     </div>
                 </a>
             }
@@ -49,7 +49,7 @@
 
 <section class="panel" style="margin-top:16px;">
     <div class="player-top" style="margin-bottom:12px;">
-        <h2>Musicas</h2>
+        <h2>Músicas</h2>
         <span class="muted">@Model.Tracks.Count</span>
     </div>
     <div class="catalog-grid">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="catalog-card-actions">
                     <a class="chip" asp-action="Search" asp-route-term="@track.ArtistName">Abrir banda</a>
-                    <a class="chip" asp-action="Search" asp-route-term="@track.Title">Buscar musica</a>
+                    <a class="chip" asp-action="Search" asp-route-term="@track.Title">Buscar música</a>
                 </div>
             </div>
         }

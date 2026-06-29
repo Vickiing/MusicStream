@@ -1,6 +1,6 @@
-@model PainelViewModel
+﻿@model PainelViewModel
 @{
-    ViewData["Title"] = "Inicio";
+    ViewData["Title"] = "Início";
 }
 
 @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
@@ -10,10 +10,10 @@
 
 <section class="panel">
     <h1>@Model.DisplayName</h1>
-    <p class="muted">Acesso ao catalogo, playlists, favoritos, planos e transacoes.</p>
+    <p class="muted">Acesso ao catalogo, playlists, favoritos, planos e transações.</p>
     <div class="grid two" style="margin-top:16px;">
         <div class="summary-item"><span class="muted">Bandas</span><strong>@Model.Artists.Count</strong></div>
-        <div class="summary-item"><span class="muted">Musicas</span><strong>@Model.Tracks.Count</strong></div>
+        <div class="summary-item"><span class="muted">Músicas</span><strong>@Model.Tracks.Count</strong></div>
         <div class="summary-item"><span class="muted">Playlists</span><strong>@Model.Playlists.Count</strong></div>
         <div class="summary-item"><span class="muted">Favoritos</span><strong>@(Model.Favorites.FavoriteTrackIds.Count + Model.Favorites.FavoriteArtistIds.Count)</strong></div>
     </div>

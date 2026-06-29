@@ -1,4 +1,4 @@
-@model PainelViewModel
+﻿@model PainelViewModel
 @{
     ViewData["Title"] = "Planos";
 }
@@ -17,9 +17,9 @@
 
 <section class="panel" style="margin:16px 0;">
     <div class="chip">Assinatura</div>
-    <h1 style="margin-top:10px;">Escolha um plano para liberar as musicas</h1>
+    <h1 style="margin-top:10px;">Escolha um plano para liberar as músicas</h1>
     <p class="muted" style="max-width: 760px;">
-        Cada plano libera a experiencia do player. A confirmacao usa um pagamento fixo de R$50 para a demonstracao e
+        Cada plano libera a experiência do player. A confirmação usa um pagamento fixo de R$50 para a demonstracao e
         atualiza a assinatura imediatamente.
     </p>
 </section>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="stack" style="margin-top:14px;">
-                <div class="muted">Limite de transacao: @plan.MaxTransactionAmount.ToString("C")</div>
+                <div class="muted">Limite de transação: @plan.MaxTransactionAmount.ToString("C")</div>
                 <div class="muted">Acesso noturno: @(plan.AllowsNightTransactions ? "Liberado" : "Bloqueado")</div>
             </div>
 
@@ -54,7 +54,7 @@
                 }
                 else
                 {
-                    <button type="submit" disabled>Plano indisponivel</button>
+                    <button type="submit" disabled>Plano indisponível</button>
                 }
             </form>
         </div>

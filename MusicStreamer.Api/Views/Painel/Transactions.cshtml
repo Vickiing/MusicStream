@@ -1,6 +1,6 @@
-@model PainelViewModel
+﻿@model PainelViewModel
 @{
-    ViewData["Title"] = "Transacoes";
+    ViewData["Title"] = "Transações";
 }
 
 <div id="transactions-status" class="status" style="display:@(string.IsNullOrWhiteSpace(Model.StatusMessage) ? "none" : "block")">
@@ -10,7 +10,7 @@
 <div class="grid two" style="margin-top:16px;">
     <section class="panel">
         <h2>Concluir pagamento</h2>
-        <p class="muted">O sistema usa o horario atual automaticamente. O usuario so informa comerciante e valor.</p>
+        <p class="muted">O sistema usa o horário atual automaticamente. O usuário só informa o comerciante e o valor.</p>
         <form asp-action="AuthorizeTransaction" method="post" data-ajax-submit="true" data-status-target="#transactions-status">
             @Html.AntiForgeryToken()
             <select name="MerchantId">
@@ -20,15 +20,15 @@
                 }
             </select>
             <input type="number" name="Amount" step="0.01" min="0.01" placeholder="Valor" />
-            <button type="submit">Concluir transacao</button>
+            <button type="submit">Concluir transação</button>
         </form>
     </section>
 
     <section class="panel">
-        <h2>Ultimas transacoes</h2>
+        <h2>Últimas transações</h2>
         @if (!Model.Transactions.Any())
         {
-            <p class="muted">Sem transacoes.</p>
+            <p class="muted">Sem transações.</p>
         }
         else
         {
