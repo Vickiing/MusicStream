@@ -195,7 +195,6 @@ public static class InicializadorBancoDados
             return entity;
         }
 
-        context.Entry(existing).CurrentValues.SetValues(entity);
         return existing;
     }
 }
