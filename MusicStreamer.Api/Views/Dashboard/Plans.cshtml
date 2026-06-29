@@ -1,0 +1,28 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Planos";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status">@Model.StatusMessage</div>
+}
+
+<section class="grid two">
+    @foreach (var plan in Model.Plans)
+    {
+        <div class="panel">
+            <div class="chip">Plano</div>
+            <h2 style="margin-top:10px;">@plan.Name</h2>
+            <div class="muted">Mensalidade: @plan.MonthlyPrice.ToString("C")</div>
+            <div class="muted">Limite: @plan.MaxTransactionAmount.ToString("C")</div>
+            <div class="muted">Noite: @(plan.AllowsNightTransactions ? "Sim" : "Nao")</div>
+
+            <form asp-action="ChoosePlan" method="post" style="margin-top:14px;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="PlanId" value="@plan.Id" />
+                <button type="submit">Simular pagamento</button>
+            </form>
+        </div>
+    }
+</section>

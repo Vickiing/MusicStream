@@ -1,0 +1,55 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Transacoes";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status">@Model.StatusMessage</div>
+}
+
+<div class="grid two">
+    <section class="panel">
+        <h2>Simular pagamento</h2>
+        <form asp-action="AuthorizeTransaction" method="post">
+            @Html.AntiForgeryToken()
+            <select name="MerchantId">
+                @foreach (var merchant in Model.Merchants)
+                {
+                    <option value="@merchant.Id">@merchant.Name (@merchant.Category)</option>
+                }
+            </select>
+            <input type="number" name="Amount" step="0.01" min="0.01" placeholder="Valor" />
+            <input type="datetime-local" name="RequestedAtUtc" />
+            <button type="submit">Autorizar</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Ultimas transacoes</h2>
+        @if (!Model.Transactions.Any())
+        {
+            <p class="muted">Sem transacoes.</p>
+        }
+        else
+        {
+            <div class="scroll-table">
+                <table>
+                    <thead>
+                        <tr><th>Status</th><th>Valor</th><th>Motivo</th></tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Transactions)
+                    {
+                        <tr>
+                            <td>@item.Status</td>
+                            <td>@item.Amount.ToString("C")</td>
+                            <td>@item.Reason</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>

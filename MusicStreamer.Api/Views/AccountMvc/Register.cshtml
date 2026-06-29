@@ -3,33 +3,30 @@
     ViewData["Title"] = "Cadastro";
 }
 
-<div class="auth-wrap">
-    <section>
-        <h1>Criar conta</h1>
-        <p class="muted">Cadastro de usuario com hash de senha e token de autenticacao.</p>
+<section>
+    <h1>Criar conta</h1>
 
-        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
-        {
-            <p class="error">@Model.ErrorMessage</p>
-        }
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <p class="error">@Model.ErrorMessage</p>
+    }
 
-        <form asp-action="Register" method="post">
-            @Html.AntiForgeryToken()
-            <label asp-for="DisplayName"></label>
-            <input asp-for="DisplayName" />
-            <span asp-validation-for="DisplayName" class="error"></span>
+    <form asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+        <label asp-for="DisplayName"></label>
+        <input asp-for="DisplayName" />
+        <span asp-validation-for="DisplayName" class="error"></span>
 
-            <label asp-for="Email"></label>
-            <input asp-for="Email" />
-            <span asp-validation-for="Email" class="error"></span>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" class="error"></span>
 
-            <label asp-for="Password"></label>
-            <input asp-for="Password" type="password" />
-            <span asp-validation-for="Password" class="error"></span>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password" class="error"></span>
 
-            <button type="submit">Criar conta</button>
-        </form>
+        <button type="submit">Criar conta</button>
+    </form>
 
-        <p class="muted">Ja possui conta? <a asp-action="Login">Entrar</a></p>
-    </section>
-</div>
+    <p class="muted">Ja possui conta? <a asp-action="Login">Entrar</a></p>
+</section>

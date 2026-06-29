@@ -10,6 +10,7 @@ public sealed class DashboardViewModel
     public string Token { get; init; } = string.Empty;
     public string? SearchTerm { get; init; }
     public string? StatusMessage { get; init; }
+    public string ActiveSection { get; init; } = "home";
     public IReadOnlyList<BandaDto> Artists { get; init; } = [];
     public IReadOnlyList<AlbumDto> Albums { get; init; } = [];
     public IReadOnlyList<MusicaDto> Tracks { get; init; } = [];
@@ -18,6 +19,7 @@ public sealed class DashboardViewModel
     public IReadOnlyList<ComercianteDto> Merchants { get; init; } = [];
     public IReadOnlyList<ResultadoTransacaoDto> Transactions { get; init; } = [];
     public ResultadoBuscaCatalogoDto? SearchResult { get; init; }
+    public ResumoFavoritosDto Favorites { get; init; } = new(Guid.Empty, [], []);
 }
 
 public sealed class SessionUserViewModel
@@ -48,11 +50,13 @@ public sealed class AddTrackToPlaylistViewModel
 public sealed class FavoriteTrackViewModel
 {
     public Guid TrackId { get; set; }
+    public string? SearchTerm { get; set; }
 }
 
 public sealed class FavoriteArtistViewModel
 {
     public Guid ArtistId { get; set; }
+    public string? SearchTerm { get; set; }
 }
 
 public sealed class AuthorizeTransactionViewModel

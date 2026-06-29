@@ -1,0 +1,31 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status">@Model.StatusMessage</div>
+}
+
+<div class="grid two">
+    <section class="panel">
+        <h1>@Model.DisplayName</h1>
+        <p class="muted">Acesso ao catalogo, playlists, favoritos, planos e transacoes.</p>
+        <div class="grid two" style="margin-top:16px;">
+            <div class="summary-item"><span class="muted">Bandas</span><strong>@Model.Artists.Count</strong></div>
+            <div class="summary-item"><span class="muted">Musicas</span><strong>@Model.Tracks.Count</strong></div>
+            <div class="summary-item"><span class="muted">Playlists</span><strong>@Model.Playlists.Count</strong></div>
+            <div class="summary-item"><span class="muted">Favoritos</span><strong>@(Model.Favorites.FavoriteTrackIds.Count + Model.Favorites.FavoriteArtistIds.Count)</strong></div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Atalhos</h2>
+        <div class="grid">
+            <a class="chip" asp-controller="Dashboard" asp-action="Plans">Simular pagamento</a>
+            <a class="chip" asp-controller="Dashboard" asp-action="Playlists">Criar playlist</a>
+            <a class="chip" asp-controller="Dashboard" asp-action="Search">Buscar musicas</a>
+        </div>
+    </section>
+</div>

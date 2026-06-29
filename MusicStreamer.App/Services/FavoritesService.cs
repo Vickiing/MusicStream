@@ -38,6 +38,11 @@ public sealed class FavoritesService(
         return await BuildSummaryAsync(userId, cancellationToken);
     }
 
+    public Task<ResumoFavoritosDto> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return BuildSummaryAsync(userId, cancellationToken);
+    }
+
     private async Task EnsureUserAndTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken)
     {
         var user = await userAccountRepository.GetByIdAsync(userId, cancellationToken);

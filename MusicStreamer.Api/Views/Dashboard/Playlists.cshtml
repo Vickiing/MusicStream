@@ -1,0 +1,72 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Playlists";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status">@Model.StatusMessage</div>
+}
+
+<div class="grid two">
+    <section class="panel">
+        <h2>Nova playlist</h2>
+        <form asp-action="CreatePlaylist" method="post">
+            @Html.AntiForgeryToken()
+            <input type="text" name="Name" placeholder="Nome da playlist" />
+            <button type="submit">Criar</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Adicionar musica</h2>
+        <form asp-action="AddTrack" method="post">
+            @Html.AntiForgeryToken()
+            <select name="PlaylistId">
+                @foreach (var playlist in Model.Playlists)
+                {
+                    <option value="@playlist.Id">@playlist.Name</option>
+                }
+            </select>
+            <select name="TrackId">
+                @foreach (var track in Model.Tracks)
+                {
+                    <option value="@track.Id">@track.Title - @track.ArtistName</option>
+                }
+            </select>
+            <button type="submit">Adicionar</button>
+        </form>
+    </section>
+</div>
+
+<section class="panel" style="margin-top:16px;">
+    <h2>Playlists criadas</h2>
+    @if (!Model.Playlists.Any())
+    {
+        <p class="muted">Sem playlists.</p>
+    }
+    else
+    {
+        <div class="grid two">
+            @foreach (var playlist in Model.Playlists)
+            {
+                <div class="panel" style="background: var(--surface-2);">
+                    <strong>@playlist.Name</strong>
+                    <div class="muted">@playlist.Tracks.Count musicas</div>
+                    @if (playlist.Tracks.Any())
+                    {
+                        <ul class="item-list" style="margin-top:12px;">
+                            @foreach (var track in playlist.Tracks)
+                            {
+                                <li class="item-row">
+                                    <span>@track.Title</span>
+                                    <span class="muted">@track.ArtistName</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            }
+        </div>
+    }
+</section>

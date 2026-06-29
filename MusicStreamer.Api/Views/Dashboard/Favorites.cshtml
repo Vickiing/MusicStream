@@ -1,0 +1,64 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Favoritos";
+    var favoriteTracks = Model.Tracks.Where(track => Model.Favorites.FavoriteTrackIds.Contains(track.Id)).ToList();
+    var favoriteArtists = Model.Artists.Where(artist => Model.Favorites.FavoriteArtistIds.Contains(artist.Id)).ToList();
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status">@Model.StatusMessage</div>
+}
+
+<div class="grid two">
+    <section class="panel">
+        <h2>Bandas favoritas</h2>
+        @if (!favoriteArtists.Any())
+        {
+            <p class="muted">Sem bandas favoritas.</p>
+        }
+        else
+        {
+            <div class="stack">
+                @foreach (var artist in favoriteArtists)
+                {
+                    <div class="item-row">
+                        <span>@artist.Name</span>
+                        <form asp-action="UnfavoriteArtist" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="ArtistId" value="@artist.Id" />
+                            <button type="submit" class="secondary">Remover</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="panel">
+        <h2>Musicas favoritas</h2>
+        @if (!favoriteTracks.Any())
+        {
+            <p class="muted">Sem musicas favoritas.</p>
+        }
+        else
+        {
+            <div class="stack">
+                @foreach (var track in favoriteTracks)
+                {
+                    <div class="item-row">
+                        <div>
+                            <strong>@track.Title</strong>
+                            <div class="muted">@track.ArtistName</div>
+                        </div>
+                        <form asp-action="UnfavoriteTrack" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="TrackId" value="@track.Id" />
+                            <button type="submit" class="secondary">Remover</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>

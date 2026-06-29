@@ -1,0 +1,78 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Buscar";
+}
+
+<section class="panel">
+    <h2>Buscar musicas e bandas</h2>
+    <form asp-action="Search" method="get" class="inline-form">
+        <input type="text" name="term" value="@Model.SearchTerm" placeholder="Digite uma banda ou musica" />
+        <button type="submit">Buscar</button>
+    </form>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status" style="margin-top:16px;">@Model.StatusMessage</div>
+}
+
+@if (Model.SearchResult is not null)
+{
+    <div class="grid two" style="margin-top:16px;">
+        <section class="panel">
+            <h3>Bandas</h3>
+            @if (!Model.SearchResult.Artists.Any())
+            {
+                <p class="muted">Sem bandas.</p>
+            }
+            else
+            {
+                <div class="stack">
+                    @foreach (var artist in Model.SearchResult.Artists)
+                    {
+                        <div class="item-row">
+                            <div>
+                                <strong>@artist.Name</strong>
+                                <div class="muted">@artist.Id</div>
+                            </div>
+                            <form asp-action="FavoriteArtist" method="post" class="inline-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="ArtistId" value="@artist.Id" />
+                                <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                <button type="submit">Favoritar</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="panel">
+            <h3>Musicas</h3>
+            @if (!Model.SearchResult.Tracks.Any())
+            {
+                <p class="muted">Sem musicas.</p>
+            }
+            else
+            {
+                <div class="stack">
+                    @foreach (var track in Model.SearchResult.Tracks)
+                    {
+                        <div class="item-row">
+                            <div>
+                                <strong>@track.Title</strong>
+                                <div class="muted">@track.ArtistName</div>
+                            </div>
+                            <form asp-action="FavoriteTrack" method="post" class="inline-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="TrackId" value="@track.Id" />
+                                <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                <button type="submit">Favoritar</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+}

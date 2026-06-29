@@ -1,0 +1,56 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Catalogo";
+}
+
+<div class="grid two">
+    <section class="panel">
+        <h2>Bandas</h2>
+        <ul class="item-list">
+            @foreach (var artist in Model.Artists)
+            {
+                <li class="item-row">
+                    <span>@artist.Name</span>
+                    <span class="muted">@artist.Id</span>
+                </li>
+            }
+        </ul>
+    </section>
+
+    <section class="panel">
+        <h2>Albuns</h2>
+        <div class="scroll-table">
+            <table>
+                <thead>
+                    <tr><th>Album</th><th>Banda</th><th>Ano</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var album in Model.Albums)
+                {
+                    <tr>
+                        <td>@album.Title</td>
+                        <td>@album.ArtistName</td>
+                        <td>@album.ReleaseYear</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<section class="panel" style="margin-top:16px;">
+    <h2>Musicas</h2>
+    <ul class="item-list">
+        @foreach (var track in Model.Tracks)
+        {
+            <li class="item-row">
+                <div>
+                    <strong>@track.Title</strong>
+                    <div class="muted">@track.ArtistName - @track.AlbumTitle</div>
+                </div>
+                <span class="muted">@track.DurationSeconds s</span>
+            </li>
+        }
+    </ul>
+</section>

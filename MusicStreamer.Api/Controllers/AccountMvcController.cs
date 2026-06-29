@@ -14,7 +14,7 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
     {
         if (HttpContext.Session.GetCurrentUser() is not null)
         {
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Home", "Dashboard");
         }
 
         return View(new LoginViewModel());
@@ -44,7 +44,7 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
             Token = response.Token
         });
 
-        return RedirectToAction("Index", "Dashboard");
+        return RedirectToAction("Home", "Dashboard");
     }
 
     [HttpGet("register")]
@@ -73,7 +73,7 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
                 Token = response.Token
             });
 
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Home", "Dashboard");
         }
         catch (InvalidOperationException ex)
         {

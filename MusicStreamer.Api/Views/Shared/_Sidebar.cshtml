@@ -1,0 +1,28 @@
+@model DashboardViewModel
+
+<div class="brand">
+    <span class="brand-mark"></span>
+    <span>MusicStreamer</span>
+</div>
+
+<div class="side-group">
+    <div class="side-label">Menu</div>
+    <nav class="nav-list">
+        <a class="nav-link @(Model.ActiveSection == "home" ? "active" : "")" asp-controller="Dashboard" asp-action="Home">Inicio</a>
+        <a class="nav-link @(Model.ActiveSection == "catalog" ? "active" : "")" asp-controller="Dashboard" asp-action="Catalog">Catalogo</a>
+        <a class="nav-link @(Model.ActiveSection == "search" ? "active" : "")" asp-controller="Dashboard" asp-action="Search">Buscar</a>
+        <a class="nav-link @(Model.ActiveSection == "plans" ? "active" : "")" asp-controller="Dashboard" asp-action="Plans">Planos</a>
+        <a class="nav-link @(Model.ActiveSection == "playlists" ? "active" : "")" asp-controller="Dashboard" asp-action="Playlists">Playlists</a>
+        <a class="nav-link @(Model.ActiveSection == "favorites" ? "active" : "")" asp-controller="Dashboard" asp-action="Favorites">Favoritos</a>
+        <a class="nav-link @(Model.ActiveSection == "transactions" ? "active" : "")" asp-controller="Dashboard" asp-action="Transactions">Transacoes</a>
+    </nav>
+</div>
+
+<div class="sidebar-card">
+    <strong>@Model.DisplayName</strong>
+    <div class="muted">@Model.Email</div>
+    <form asp-controller="AccountMvc" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="secondary">Sair</button>
+    </form>
+</div>
