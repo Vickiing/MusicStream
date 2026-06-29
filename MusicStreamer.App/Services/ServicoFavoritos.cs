@@ -1,11 +1,11 @@
-﻿using MusicStreamer.App.Contracts;
+using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class FavoritesService(
+public sealed class ServicoFavoritos(
     IContaUsuarioRepository userAccountRepository,
     ICatalogoRepository catalogRepository,
     IRepositorioFavoritos favoritesRepository) : IServicoFavoritos
@@ -72,4 +72,5 @@ public sealed class FavoritesService(
             favorites.FavoriteBands.Select(item => item.ArtistId).ToList());
     }
 }
+
 

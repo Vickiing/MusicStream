@@ -6,7 +6,7 @@ using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class UserAccountRepository(MusicStreamerDbContext dbContext) : IContaUsuarioRepository
+public sealed class ContaUsuarioRepository(MusicStreamerDbContext dbContext) : IContaUsuarioRepository
 {
     public async Task AddAsync(ContaUsuario account, CancellationToken cancellationToken = default)
     {
@@ -32,3 +32,4 @@ public sealed class UserAccountRepository(MusicStreamerDbContext dbContext) : IC
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
+

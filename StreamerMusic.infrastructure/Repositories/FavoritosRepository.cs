@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IRepositorioFavoritos
+public sealed class FavoritosRepository(MusicStreamerDbContext dbContext) : IRepositorioFavoritos
 {
     public async Task AddFavoriteTrackAsync(MusicaFavorita favoriteMusic, CancellationToken cancellationToken = default)
     {
@@ -74,4 +74,5 @@ public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IRep
         return (tracks, artists);
     }
 }
+
 

@@ -1,4 +1,4 @@
-﻿using MusicStreamer.App.Contracts;
+using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
@@ -6,7 +6,7 @@ using MusicStreamer.Domain.Services;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class TransactionService(
+public sealed class ServicoTransacoes(
     IContaUsuarioRepository userAccountRepository,
     IPlanoAssinaturaRepository subscriptionPlanRepository,
     IComercianteRepository merchantRepository,
@@ -69,4 +69,5 @@ public sealed class TransactionService(
                 .ToList());
     }
 }
+
 

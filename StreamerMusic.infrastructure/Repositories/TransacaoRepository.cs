@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Enums;
 using MusicStreamer.Domain.Repositories;
@@ -6,7 +6,7 @@ using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class TransactionRepository(MusicStreamerDbContext dbContext) : ITransacaoRepository
+public sealed class TransacaoRepository(MusicStreamerDbContext dbContext) : ITransacaoRepository
 {
     public async Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default)
     {
@@ -33,4 +33,5 @@ public sealed class TransactionRepository(MusicStreamerDbContext dbContext) : IT
             .ToListAsync(cancellationToken);
     }
 }
+
 

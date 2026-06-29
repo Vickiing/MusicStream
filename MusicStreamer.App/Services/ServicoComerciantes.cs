@@ -1,10 +1,10 @@
-﻿using MusicStreamer.App.Contracts;
+using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class MerchantService(IComercianteRepository merchantRepository) : IServicoComerciantes
+public sealed class ServicoComerciantes(IComercianteRepository merchantRepository) : IServicoComerciantes
 {
     public async Task<IReadOnlyList<ComercianteDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -14,4 +14,5 @@ public sealed class MerchantService(IComercianteRepository merchantRepository) :
             .ToList();
     }
 }
+
 

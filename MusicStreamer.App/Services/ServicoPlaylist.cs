@@ -1,11 +1,11 @@
-﻿using MusicStreamer.App.Contracts;
+using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class PlaylistService(
+public sealed class ServicoPlaylist(
     IContaUsuarioRepository userAccountRepository,
     ICatalogoRepository catalogRepository,
     IPlaylistRepository playlistRepository) : IServicoPlaylist
@@ -61,4 +61,5 @@ public sealed class PlaylistService(
                 .ToList());
     }
 }
+
 

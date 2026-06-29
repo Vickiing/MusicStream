@@ -1,10 +1,10 @@
-﻿using MusicStreamer.App.Contracts;
+using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class CatalogService(ICatalogoRepository catalogRepository) : IServicoCatalogo
+public sealed class ServicoCatalogo(ICatalogoRepository catalogRepository) : IServicoCatalogo
 {
     public async Task<IReadOnlyList<BandaDto>> GetArtistsAsync(CancellationToken cancellationToken = default)
     {
@@ -39,4 +39,5 @@ public sealed class CatalogService(ICatalogoRepository catalogRepository) : ISer
             result.Tracks.Select(item => new MusicaDto(item.Id, item.Title, item.ArtistName, item.AlbumTitle, item.DurationSeconds)).ToList());
     }
 }
+
 

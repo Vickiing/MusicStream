@@ -1,10 +1,10 @@
-﻿using MusicStreamer.App.Contracts;
+using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class SubscriptionService(
+public sealed class ServicoPlanosAssinatura(
     IContaUsuarioRepository userAccountRepository,
     IPlanoAssinaturaRepository subscriptionPlanRepository) : IServicoPlanosAssinatura
 {
@@ -55,4 +55,5 @@ public sealed class SubscriptionService(
         return new AssinaturaUsuarioDto(user.Id, plan.Id, plan.Name, user.SubscriptionPlanId.HasValue);
     }
 }
+
 

@@ -20,14 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\scripts\*.sql">
-      <Link>scripts\%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Microsoft.EntityFrameworkCore">
       <HintPath>C:\Users\User\.nuget\packages\microsoft.entityframeworkcore\10.0.7\lib\net10.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>

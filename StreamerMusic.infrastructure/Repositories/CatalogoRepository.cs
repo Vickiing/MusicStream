@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class CatalogRepository(MusicStreamerDbContext dbContext) : ICatalogoRepository
+public sealed class CatalogoRepository(MusicStreamerDbContext dbContext) : ICatalogoRepository
 {
     public async Task<IReadOnlyList<Banda>> GetArtistsAsync(CancellationToken cancellationToken = default)
     {
@@ -72,4 +72,5 @@ public sealed class CatalogRepository(MusicStreamerDbContext dbContext) : ICatal
         return new ResultadoBuscaCatalogo(artists, tracks);
     }
 }
+
 

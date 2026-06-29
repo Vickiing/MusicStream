@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class MerchantRepository(MusicStreamerDbContext dbContext) : IComercianteRepository
+public sealed class ComercianteRepository(MusicStreamerDbContext dbContext) : IComercianteRepository
 {
     public Task<Comerciante?> GetByIdAsync(Guid merchantId, CancellationToken cancellationToken = default)
     {
@@ -20,4 +20,5 @@ public sealed class MerchantRepository(MusicStreamerDbContext dbContext) : ICome
             .ToListAsync(cancellationToken);
     }
 }
+
 

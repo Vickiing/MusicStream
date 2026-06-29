@@ -1,4 +1,4 @@
-﻿using MusicStreamer.App.Abstractions;
+using MusicStreamer.App.Abstractions;
 using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
@@ -6,7 +6,7 @@ using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class AuthService(
+public sealed class ServicoAutenticacao(
     IContaUsuarioRepository userAccountRepository,
     IHashSenha passwordHasher,
     IServicoToken tokenService) : IServicoAutenticacao
@@ -54,4 +54,5 @@ public sealed class AuthService(
         return new RespostaAutenticacaoDto(account.Id, account.DisplayName, account.Email.Value, tokenService.Generate(account), account.SubscriptionPlanId);
     }
 }
+
 
