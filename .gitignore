@@ -3,6 +3,10 @@ obj/
 .vs/
 .dotnet-home/
 .appdata/
+.nuget/
+*.db
+*.db-shm
+*.db-wal
 *.log
 *.err
 *.user
