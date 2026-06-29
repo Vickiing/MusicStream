@@ -22,7 +22,7 @@ public sealed class AuthService(
         var account = ContaUsuario.Register(input.DisplayName, input.Email, passwordHasher.Hash(input.Password));
         await userAccountRepository.AddAsync(account, cancellationToken);
 
-        return new RespostaAutenticacaoDto(account.Id, account.DisplayName, account.Email.Value, tokenService.Generate(account));
+        return new RespostaAutenticacaoDto(account.Id, account.DisplayName, account.Email.Value, tokenService.Generate(account), account.SubscriptionPlanId);
     }
 
     public async Task<RespostaAutenticacaoDto?> LoginAsync(EntrarDto input, CancellationToken cancellationToken = default)
@@ -51,7 +51,7 @@ public sealed class AuthService(
             // Mantem o login funcional mesmo se a escrita auxiliar falhar.
         }
 
-        return new RespostaAutenticacaoDto(account.Id, account.DisplayName, account.Email.Value, tokenService.Generate(account));
+        return new RespostaAutenticacaoDto(account.Id, account.DisplayName, account.Email.Value, tokenService.Generate(account), account.SubscriptionPlanId);
     }
 }
 

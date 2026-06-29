@@ -41,7 +41,8 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
             UserId = response.UserId,
             DisplayName = response.DisplayName,
             Email = response.Email,
-            Token = response.Token
+            Token = response.Token,
+            SubscriptionPlanId = response.SubscriptionPlanId
         });
 
         return RedirectToAction("Home", "Dashboard");
@@ -70,7 +71,8 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
                 UserId = response.UserId,
                 DisplayName = response.DisplayName,
                 Email = response.Email,
-                Token = response.Token
+                Token = response.Token,
+                SubscriptionPlanId = response.SubscriptionPlanId
             });
 
             return RedirectToAction("Home", "Dashboard");

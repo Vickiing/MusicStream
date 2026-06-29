@@ -4,5 +4,5 @@ public sealed record CadastrarUsuarioDto(string DisplayName, string Email, strin
 
 public sealed record EntrarDto(string Email, string Password);
 
-public sealed record RespostaAutenticacaoDto(Guid UserId, string DisplayName, string Email, string Token);
+public sealed record RespostaAutenticacaoDto(Guid UserId, string DisplayName, string Email, string Token, Guid? SubscriptionPlanId);
 

@@ -62,6 +62,12 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<MusicStreamerDbContext>();
+    await MusicStreamerDatabaseInitializer.MigrateAndSeedAsync(dbContext, app.Environment.ContentRootPath);
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();

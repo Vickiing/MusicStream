@@ -37,27 +37,23 @@ Exemplo em [appsettings.json linhas 2-4](./MusicStreamer.Api/appsettings.json#L2
 dotnet build MusicStreamer.slnx --no-restore
 ```
 
-3. Se quiser aplicar a migration manualmente:
-
-```powershell
-dotnet ef database update --project StreamerMusic.infrastructure --startup-project MusicStreamer.Api
-```
-
-4. Para popular o catalogo com bandas, albuns, musicas, planos e comerciantes de exemplo, execute o script `scripts/seed-catalogo.sql` no banco depois das migrations.
-5. Para adicionar um bloco maior de faixas para demonstracao da busca e do player visual, execute `scripts/seed-musicas-50.sql`.
-
-6. Rode a aplicacao:
+3. Rode a aplicacao:
 
 ```powershell
 dotnet run --project MusicStreamer.Api/MusicStreamer.Api.csproj
 ```
 
-7. Acesse:
+4. A aplicacao executa automaticamente as migrations e os seeds no startup. Isso inclui:
+
+- planos, comerciantes, artistas, albuns e musicas base
+- 50 musicas extras para demonstracao da busca
+
+5. Acesse:
 
 - MVC: `https://localhost:7107/app/account/register`
 - API: `https://localhost:7107/api/...`
 
-Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startup. O banco deve ser atualizado manualmente com `dotnet ef database update` antes de subir a API. O script `scripts/seed-catalogo.sql` popula planos, artistas, albuns, musicas e comerciantes de exemplo.
+Observacao: o startup da aplicacao faz `Database.Migrate()` e executa os scripts de seed automaticamente. Basta configurar a connection string e subir a API.
 
 ## Evidencias das rubricas
 
