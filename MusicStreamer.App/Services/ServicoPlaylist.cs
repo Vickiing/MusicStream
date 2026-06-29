@@ -33,8 +33,11 @@ public sealed class ServicoPlaylist(
             return null;
         }
 
-        playlist.AddTrack(track.Id);
-        await playlistRepository.UpdateAsync(playlist, cancellationToken);
+        var added = await playlistRepository.AddTrackAsync(playlist.Id, track.Id, cancellationToken);
+        if (!added)
+        {
+            return null;
+        }
 
         var refreshed = await playlistRepository.GetByIdAsync(input.PlaylistId, cancellationToken);
         return refreshed is null ? null : Map(refreshed);

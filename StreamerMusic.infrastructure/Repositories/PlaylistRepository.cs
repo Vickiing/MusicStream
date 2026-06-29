@@ -40,9 +40,31 @@ public sealed class PlaylistRepository(MusicStreamerDbContext dbContext) : IPlay
             .ToListAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(Playlist playlist, CancellationToken cancellationToken = default)
+    public async Task<bool> AddTrackAsync(Guid playlistId, Guid trackId, CancellationToken cancellationToken = default)
     {
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            var alreadyExists = await dbContext.PlaylistTracks
+                .AnyAsync(item => item.PlaylistId == playlistId && item.MusicId == trackId, cancellationToken);
+
+            if (alreadyExists)
+            {
+                return true;
+            }
+
+            dbContext.PlaylistTracks.Add(FaixaPlaylist.Create(playlistId, trackId));
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return false;
+        }
+        catch (DbUpdateException)
+        {
+            return false;
+        }
     }
 }
 
