@@ -44,14 +44,15 @@ dotnet ef database update --project StreamerMusic.infrastructure --startup-proje
 ```
 
 4. Para popular o catalogo com bandas, albuns, musicas, planos e comerciantes de exemplo, execute o script `scripts/seed-catalogo.sql` no banco depois das migrations.
+5. Para adicionar um bloco maior de faixas para demonstracao da busca e do player visual, execute `scripts/seed-musicas-50.sql`.
 
-5. Rode a aplicacao:
+6. Rode a aplicacao:
 
 ```powershell
 dotnet run --project MusicStreamer.Api/MusicStreamer.Api.csproj
 ```
 
-6. Acesse:
+7. Acesse:
 
 - MVC: `https://localhost:7107/app/account/register`
 - API: `https://localhost:7107/api/...`
@@ -83,8 +84,8 @@ Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startu
 
 - Criacao de conta
 - Login
-- Escolha de plano com simulacao de assinatura
-- Player visual com botoes comuns de reproducao
+- Escolha de plano com tela de pagamento simulada de R$50
+- Player visual com botoes comuns de reproducao e bloqueio visual ate ativacao da assinatura
 - Listagem de bandas e albuns
 - Busca de bandas e musicas
 - Criacao de playlist

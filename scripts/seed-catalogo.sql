@@ -4,19 +4,49 @@ SET XACT_ABORT ON;
 BEGIN TRAN;
 
 -- Plans
-IF NOT EXISTS (SELECT 1 FROM dbo.SubscriptionPlans WHERE Name = 'Starter')
+IF EXISTS (SELECT 1 FROM dbo.SubscriptionPlans WHERE Id = '40000000-0000-0000-0000-000000000001')
+BEGIN
+    UPDATE dbo.SubscriptionPlans
+    SET Name = 'Gratuito',
+        MonthlyPrice = 0.00,
+        MaxTransactionAmount = 10.00,
+        AllowsNightTransactions = 0,
+        IsActive = 1
+    WHERE Id = '40000000-0000-0000-0000-000000000001';
+END
+ELSE
 BEGIN
     INSERT INTO dbo.SubscriptionPlans (Id, Name, MonthlyPrice, MaxTransactionAmount, AllowsNightTransactions, IsActive)
-    VALUES ('40000000-0000-0000-0000-000000000001', 'Starter', 14.90, 20.00, 0, 1);
+    VALUES ('40000000-0000-0000-0000-000000000001', 'Gratuito', 0.00, 10.00, 0, 1);
 END;
 
-IF NOT EXISTS (SELECT 1 FROM dbo.SubscriptionPlans WHERE Name = 'Standard')
+IF EXISTS (SELECT 1 FROM dbo.SubscriptionPlans WHERE Id = '40000000-0000-0000-0000-000000000002')
+BEGIN
+    UPDATE dbo.SubscriptionPlans
+    SET Name = 'Basico',
+        MonthlyPrice = 19.90,
+        MaxTransactionAmount = 50.00,
+        AllowsNightTransactions = 0,
+        IsActive = 1
+    WHERE Id = '40000000-0000-0000-0000-000000000002';
+END
+ELSE
 BEGIN
     INSERT INTO dbo.SubscriptionPlans (Id, Name, MonthlyPrice, MaxTransactionAmount, AllowsNightTransactions, IsActive)
-    VALUES ('40000000-0000-0000-0000-000000000002', 'Standard', 24.90, 50.00, 1, 1);
+    VALUES ('40000000-0000-0000-0000-000000000002', 'Basico', 19.90, 50.00, 0, 1);
 END;
 
-IF NOT EXISTS (SELECT 1 FROM dbo.SubscriptionPlans WHERE Name = 'Premium')
+IF EXISTS (SELECT 1 FROM dbo.SubscriptionPlans WHERE Id = '40000000-0000-0000-0000-000000000003')
+BEGIN
+    UPDATE dbo.SubscriptionPlans
+    SET Name = 'Premium',
+        MonthlyPrice = 39.90,
+        MaxTransactionAmount = 100.00,
+        AllowsNightTransactions = 1,
+        IsActive = 1
+    WHERE Id = '40000000-0000-0000-0000-000000000003';
+END
+ELSE
 BEGIN
     INSERT INTO dbo.SubscriptionPlans (Id, Name, MonthlyPrice, MaxTransactionAmount, AllowsNightTransactions, IsActive)
     VALUES ('40000000-0000-0000-0000-000000000003', 'Premium', 39.90, 100.00, 1, 1);

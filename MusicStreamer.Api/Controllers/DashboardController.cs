@@ -53,6 +53,40 @@ public sealed class DashboardController(
         return View(model);
     }
 
+    [HttpGet("plans/payment/{planId:guid}")]
+    public async Task<IActionResult> PlanPayment(Guid planId, [FromQuery] string? message, CancellationToken cancellationToken)
+    {
+        PrepareShell("Pagamento", "plans");
+        var user = RequireUser();
+
+        var plan = await subscriptionService.GetPlanByIdAsync(planId, cancellationToken);
+        if (plan is null)
+        {
+            return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+        }
+
+        var plans = await subscriptionService.GetPlansAsync(cancellationToken);
+        var currentPlan = user.SubscriptionPlanId.HasValue
+            ? plans.FirstOrDefault(item => item.Id == user.SubscriptionPlanId.Value)
+            : null;
+
+        ViewData["HasActiveSubscription"] = currentPlan is not null;
+        ViewData["CurrentPlanName"] = currentPlan?.Name ?? string.Empty;
+
+        ViewData["UseAppShell"] = true;
+        ViewData["Title"] = "Pagamento";
+        ViewData["ActiveSection"] = "plans";
+
+        return View(new PlanPaymentViewModel
+        {
+            PlanId = plan.Id,
+            PlanName = plan.Name,
+            MonthlyPrice = plan.MonthlyPrice,
+            PaymentAmount = 50m,
+            StatusMessage = message
+        });
+    }
+
     [HttpGet("playlists")]
     public async Task<IActionResult> Playlists([FromQuery] string? message, CancellationToken cancellationToken)
     {
@@ -81,9 +115,49 @@ public sealed class DashboardController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChoosePlan(ChoosePlanViewModel model, CancellationToken cancellationToken)
     {
+        RequireUser();
+
+        var plan = await subscriptionService.GetPlanByIdAsync(model.PlanId, cancellationToken);
+        if (plan is null)
+        {
+            return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+        }
+
+        return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId });
+    }
+
+    [HttpPost("subscriptions/payment")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmPlanPayment(PlanPaymentViewModel model, CancellationToken cancellationToken)
+    {
         var user = RequireUser();
-        await subscriptionService.ChoosePlanAsync(new EscolherPlanoDto(user.UserId, model.PlanId), cancellationToken);
-        return RedirectToAction(nameof(Plans), new { message = "Pagamento simulado com sucesso. Plano ativado." });
+        var plan = await subscriptionService.GetPlanByIdAsync(model.PlanId, cancellationToken);
+        if (plan is null)
+        {
+            return RedirectToAction(nameof(Plans), new { message = "Plano nao encontrado." });
+        }
+
+        if (model.PaymentAmount != 50m)
+        {
+            return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId, message = "Valor invalido para a simulacao." });
+        }
+
+        var response = await subscriptionService.ChoosePlanAsync(new EscolherPlanoDto(user.UserId, model.PlanId), cancellationToken);
+        if (response is null)
+        {
+            return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId, message = "Nao foi possivel ativar o plano." });
+        }
+
+        HttpContext.Session.SetCurrentUser(new SessionUserViewModel
+        {
+            UserId = user.UserId,
+            DisplayName = user.DisplayName,
+            Email = user.Email,
+            Token = user.Token,
+            SubscriptionPlanId = model.PlanId
+        });
+
+        return RedirectToAction(nameof(Plans), new { message = $"Pagamento simulado de R$50 concluido. Plano {plan.Name} ativado." });
     }
 
     [HttpPost("playlists")]
@@ -170,6 +244,14 @@ public sealed class DashboardController(
             searchResult = await catalogService.SearchAsync(term, cancellationToken);
         }
 
+        var plans = await subscriptionService.GetPlansAsync(cancellationToken);
+        var currentPlan = user.SubscriptionPlanId.HasValue
+            ? plans.FirstOrDefault(plan => plan.Id == user.SubscriptionPlanId.Value)
+            : null;
+
+        ViewData["HasActiveSubscription"] = currentPlan is not null;
+        ViewData["CurrentPlanName"] = currentPlan?.Name ?? string.Empty;
+
         return new DashboardViewModel
         {
             UserId = user.UserId,
@@ -182,12 +264,14 @@ public sealed class DashboardController(
             Artists = await catalogService.GetArtistsAsync(cancellationToken),
             Albums = await catalogService.GetAlbumsAsync(cancellationToken),
             Tracks = await catalogService.GetTracksAsync(cancellationToken),
-            Plans = await subscriptionService.GetPlansAsync(cancellationToken),
+            Plans = plans,
             Playlists = await playlistService.GetByUserAsync(user.UserId, cancellationToken),
             Merchants = await merchantService.GetAllAsync(cancellationToken),
             Transactions = await transactionService.GetByUserAsync(user.UserId, cancellationToken),
             SearchResult = searchResult,
-            Favorites = await favoritesService.GetByUserAsync(user.UserId, cancellationToken)
+            Favorites = await favoritesService.GetByUserAsync(user.UserId, cancellationToken),
+            HasActiveSubscription = currentPlan is not null,
+            CurrentPlanName = currentPlan?.Name ?? string.Empty
         };
     }
 

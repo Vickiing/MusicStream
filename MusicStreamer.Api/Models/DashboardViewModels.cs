@@ -11,6 +11,8 @@ public sealed class DashboardViewModel
     public string? SearchTerm { get; init; }
     public string? StatusMessage { get; init; }
     public string ActiveSection { get; init; } = "home";
+    public bool HasActiveSubscription { get; init; }
+    public string CurrentPlanName { get; init; } = string.Empty;
     public IReadOnlyList<BandaDto> Artists { get; init; } = [];
     public IReadOnlyList<AlbumDto> Albums { get; init; } = [];
     public IReadOnlyList<MusicaDto> Tracks { get; init; } = [];
@@ -28,11 +30,21 @@ public sealed class SessionUserViewModel
     public string DisplayName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public string Token { get; init; } = string.Empty;
+    public Guid? SubscriptionPlanId { get; init; }
 }
 
 public sealed class ChoosePlanViewModel
 {
     public Guid PlanId { get; set; }
+}
+
+public sealed class PlanPaymentViewModel
+{
+    public Guid PlanId { get; set; }
+    public string PlanName { get; set; } = string.Empty;
+    public decimal MonthlyPrice { get; set; }
+    public decimal PaymentAmount { get; set; } = 50m;
+    public string? StatusMessage { get; set; }
 }
 
 public sealed class CreatePlaylistViewModel

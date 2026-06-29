@@ -8,12 +8,19 @@
     <div class="status">@Model.StatusMessage</div>
 }
 
+@if (Model.HasActiveSubscription)
+{
+    <div class="status" style="margin-top:16px;">
+        Plano ativo: <strong>@Model.CurrentPlanName</strong>
+    </div>
+}
+
 <section class="panel" style="margin-bottom:16px;">
     <div class="chip">Assinatura</div>
     <h1 style="margin-top:10px;">Escolha um plano para liberar as musicas</h1>
     <p class="muted" style="max-width: 760px;">
-        A selecao abaixo simula a assinatura exigida no trabalho. O usuario escolhe um plano,
-        confirma a acao e a aplicacao considera o acesso musical habilitado para a demonstracao.
+        Selecione uma opcao de assinatura e siga para a tela de pagamento. A confirmacao usa um valor fixo de R$50
+        apenas para simular a operacao e ativar o acesso ao player.
     </p>
 </section>
 
@@ -30,13 +37,13 @@
             <div class="stack" style="margin-top:14px;">
                 <div class="summary-item">
                     <span class="muted">Experiencia do plano</span>
-                    <strong>@(plan.AllowsNightTransactions ? "Ideal para ouvir a noite" : "Uso padrao durante o dia")</strong>
+                    <strong>@(plan.AllowsNightTransactions ? "Uso completo, inclusive a noite" : "Uso essencial para a demonstracao")</strong>
                 </div>
 
                 <form asp-action="ChoosePlan" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="PlanId" value="@plan.Id" />
-                    <button type="submit">Escolher plano</button>
+                    <button type="submit">Ir para pagamento</button>
                 </form>
             </div>
         </div>
