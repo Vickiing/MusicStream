@@ -2,7 +2,7 @@
 
 namespace MusicStreamer.Api.Models;
 
-public sealed class DashboardViewModel
+public sealed class PainelViewModel
 {
     public Guid UserId { get; init; }
     public string DisplayName { get; init; } = string.Empty;
@@ -24,7 +24,7 @@ public sealed class DashboardViewModel
     public ResumoFavoritosDto Favorites { get; init; } = new(Guid.Empty, [], []);
 }
 
-public sealed class SessionUserViewModel
+public sealed class UsuarioSessaoViewModel
 {
     public Guid UserId { get; init; }
     public string DisplayName { get; init; } = string.Empty;
@@ -33,12 +33,12 @@ public sealed class SessionUserViewModel
     public Guid? SubscriptionPlanId { get; init; }
 }
 
-public sealed class ChoosePlanViewModel
+public sealed class EscolherPlanoViewModel
 {
     public Guid PlanId { get; set; }
 }
 
-public sealed class PlanPaymentViewModel
+public sealed class PagamentoPlanoViewModel
 {
     public Guid PlanId { get; set; }
     public string PlanName { get; set; } = string.Empty;
@@ -47,31 +47,31 @@ public sealed class PlanPaymentViewModel
     public string? StatusMessage { get; set; }
 }
 
-public sealed class CreatePlaylistViewModel
+public sealed class CriarPlaylistViewModel
 {
     [System.ComponentModel.DataAnnotations.Required]
     public string Name { get; set; } = string.Empty;
 }
 
-public sealed class AddTrackToPlaylistViewModel
+public sealed class AdicionarMusicaNaPlaylistViewModel
 {
     public Guid PlaylistId { get; set; }
     public Guid TrackId { get; set; }
 }
 
-public sealed class FavoriteTrackViewModel
+public sealed class MusicaFavoritaViewModel
 {
     public Guid TrackId { get; set; }
     public string? SearchTerm { get; set; }
 }
 
-public sealed class FavoriteArtistViewModel
+public sealed class BandaFavoritaViewModel
 {
     public Guid ArtistId { get; set; }
     public string? SearchTerm { get; set; }
 }
 
-public sealed class AuthorizeTransactionViewModel
+public sealed class AutorizarTransacaoViewModel
 {
     public Guid MerchantId { get; set; }
     public decimal Amount { get; set; }

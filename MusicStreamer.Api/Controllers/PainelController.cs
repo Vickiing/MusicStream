@@ -7,7 +7,7 @@ using MusicStreamer.App.DTOs;
 namespace MusicStreamer.Api.Controllers;
 
 [Route("app")]
-public sealed class DashboardController(
+public sealed class PainelController(
     IServicoCatalogo catalogService,
     IServicoPlanosAssinatura subscriptionService,
     IServicoPlaylist playlistService,
@@ -77,7 +77,7 @@ public sealed class DashboardController(
         ViewData["Title"] = "Pagamento";
         ViewData["ActiveSection"] = "plans";
 
-        return View(new PlanPaymentViewModel
+        return View(new PagamentoPlanoViewModel
         {
             PlanId = plan.Id,
             PlanName = plan.Name,
@@ -113,7 +113,7 @@ public sealed class DashboardController(
 
     [HttpPost("subscriptions/choose-plan")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ChoosePlan(ChoosePlanViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> ChoosePlan(EscolherPlanoViewModel model, CancellationToken cancellationToken)
     {
         RequireUser();
 
@@ -128,7 +128,7 @@ public sealed class DashboardController(
 
     [HttpPost("subscriptions/payment")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ConfirmPlanPayment(PlanPaymentViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> ConfirmPlanPayment(PagamentoPlanoViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         var plan = await subscriptionService.GetPlanByIdAsync(model.PlanId, cancellationToken);
@@ -148,7 +148,7 @@ public sealed class DashboardController(
             return RedirectToAction(nameof(PlanPayment), new { planId = model.PlanId, message = "Nao foi possivel ativar o plano." });
         }
 
-        HttpContext.Session.SetCurrentUser(new SessionUserViewModel
+        HttpContext.Session.SetCurrentUser(new UsuarioSessaoViewModel
         {
             UserId = user.UserId,
             DisplayName = user.DisplayName,
@@ -162,7 +162,7 @@ public sealed class DashboardController(
 
     [HttpPost("playlists")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreatePlaylist(CreatePlaylistViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreatePlaylist(CriarPlaylistViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         if (!ModelState.IsValid)
@@ -176,7 +176,7 @@ public sealed class DashboardController(
 
     [HttpPost("playlists/add-track")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddTrack(AddTrackToPlaylistViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddTrack(AdicionarMusicaNaPlaylistViewModel model, CancellationToken cancellationToken)
     {
         RequireUser();
         await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
@@ -185,7 +185,7 @@ public sealed class DashboardController(
 
     [HttpPost("favorites/tracks")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> FavoriteTrack(FavoriteTrackViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> FavoriteTrack(MusicaFavoritaViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         await favoritesService.FavoriteTrackAsync(user.UserId, model.TrackId, cancellationToken);
@@ -194,7 +194,7 @@ public sealed class DashboardController(
 
     [HttpPost("favorites/tracks/remove")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UnfavoriteTrack(FavoriteTrackViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> UnfavoriteTrack(MusicaFavoritaViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         await favoritesService.UnfavoriteTrackAsync(user.UserId, model.TrackId, cancellationToken);
@@ -203,7 +203,7 @@ public sealed class DashboardController(
 
     [HttpPost("favorites/artists")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> FavoriteArtist(FavoriteArtistViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> FavoriteArtist(BandaFavoritaViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         await favoritesService.FavoriteArtistAsync(user.UserId, model.ArtistId, cancellationToken);
@@ -212,7 +212,7 @@ public sealed class DashboardController(
 
     [HttpPost("favorites/artists/remove")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UnfavoriteArtist(FavoriteArtistViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> UnfavoriteArtist(BandaFavoritaViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         await favoritesService.UnfavoriteArtistAsync(user.UserId, model.ArtistId, cancellationToken);
@@ -221,7 +221,7 @@ public sealed class DashboardController(
 
     [HttpPost("transactions/authorize")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AuthorizeTransaction(AuthorizeTransactionViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> AuthorizeTransaction(AutorizarTransacaoViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
         await transactionService.AuthorizeAsync(
@@ -231,7 +231,7 @@ public sealed class DashboardController(
         return RedirectToAction(nameof(Transactions), new { message = "Transacao simulada com sucesso." });
     }
 
-    private async Task<DashboardViewModel> BuildModelAsync(
+    private async Task<PainelViewModel> BuildModelAsync(
         string activeSection,
         CancellationToken cancellationToken,
         string? term = null,
@@ -252,7 +252,7 @@ public sealed class DashboardController(
         ViewData["HasActiveSubscription"] = currentPlan is not null;
         ViewData["CurrentPlanName"] = currentPlan?.Name ?? string.Empty;
 
-        return new DashboardViewModel
+        return new PainelViewModel
         {
             UserId = user.UserId,
             DisplayName = user.DisplayName,
@@ -282,7 +282,7 @@ public sealed class DashboardController(
         ViewData["ActiveSection"] = activeSection;
     }
 
-    private SessionUserViewModel RequireUser()
+    private UsuarioSessaoViewModel RequireUser()
     {
         var user = HttpContext.Session.GetCurrentUser();
         if (user is null)

@@ -76,7 +76,7 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/app/account/login"));
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Dashboard}/{action=Root}/{id?}");
+    pattern: "{controller=Painel}/{action=Root}/{id?}");
 app.MapControllers();
 app.Run();
 

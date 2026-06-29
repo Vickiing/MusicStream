@@ -2,7 +2,7 @@
 
 namespace MusicStreamer.Api.Models;
 
-public sealed class LoginViewModel
+public sealed class EntrarViewModel
 {
     [Required, EmailAddress]
     public string Email { get; set; } = string.Empty;
@@ -13,7 +13,7 @@ public sealed class LoginViewModel
     public string? ErrorMessage { get; set; }
 }
 
-public sealed class RegisterViewModel
+public sealed class CadastroViewModel
 {
     [Required, StringLength(120)]
     public string DisplayName { get; set; } = string.Empty;

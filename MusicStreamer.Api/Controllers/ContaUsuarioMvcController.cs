@@ -7,36 +7,36 @@ using MusicStreamer.App.DTOs;
 namespace MusicStreamer.Api.Controllers;
 
 [Route("app/account")]
-public sealed class AccountMvcController(IServicoAutenticacao authService) : Controller
+public sealed class ContaUsuarioMvcController(IServicoAutenticacao servicoAutenticacao) : Controller
 {
     [HttpGet("login")]
     public IActionResult Login()
     {
         if (HttpContext.Session.GetCurrentUser() is not null)
         {
-            return RedirectToAction("Home", "Dashboard");
+            return RedirectToAction("Home", "Painel");
         }
 
-        return View(new LoginViewModel());
+        return View(new EntrarViewModel());
     }
 
     [HttpPost("login")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login(EntrarViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var response = await authService.LoginAsync(new EntrarDto(model.Email, model.Password), cancellationToken);
+        var response = await servicoAutenticacao.LoginAsync(new EntrarDto(model.Email, model.Password), cancellationToken);
         if (response is null)
         {
             model.ErrorMessage = "Credenciais invalidas.";
             return View(model);
         }
 
-        HttpContext.Session.SetCurrentUser(new SessionUserViewModel
+        HttpContext.Session.SetCurrentUser(new UsuarioSessaoViewModel
         {
             UserId = response.UserId,
             DisplayName = response.DisplayName,
@@ -45,18 +45,18 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
             SubscriptionPlanId = response.SubscriptionPlanId
         });
 
-        return RedirectToAction("Home", "Dashboard");
+        return RedirectToAction("Home", "Painel");
     }
 
     [HttpGet("register")]
     public IActionResult Register()
     {
-        return View(new RegisterViewModel());
+        return View(new CadastroViewModel());
     }
 
     [HttpPost("register")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Register(CadastroViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -65,8 +65,8 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
 
         try
         {
-            var response = await authService.RegisterAsync(new CadastrarUsuarioDto(model.DisplayName, model.Email, model.Password), cancellationToken);
-            HttpContext.Session.SetCurrentUser(new SessionUserViewModel
+            var response = await servicoAutenticacao.RegisterAsync(new CadastrarUsuarioDto(model.DisplayName, model.Email, model.Password), cancellationToken);
+            HttpContext.Session.SetCurrentUser(new UsuarioSessaoViewModel
             {
                 UserId = response.UserId,
                 DisplayName = response.DisplayName,
@@ -75,7 +75,7 @@ public sealed class AccountMvcController(IServicoAutenticacao authService) : Con
                 SubscriptionPlanId = response.SubscriptionPlanId
             });
 
-            return RedirectToAction("Home", "Dashboard");
+            return RedirectToAction("Home", "Painel");
         }
         catch (InvalidOperationException ex)
         {

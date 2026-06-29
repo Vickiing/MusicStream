@@ -12,14 +12,14 @@ namespace MusicStreamer.Api.Controllers;
 public sealed class PlaylistsController(IServicoPlaylist playlistService) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<PlaylistDto>> Create([FromBody] CreatePlaylistRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<PlaylistDto>> Create([FromBody] CriarPlaylistRequest request, CancellationToken cancellationToken)
     {
         var playlist = await playlistService.CreateAsync(new CriarPlaylistDto(request.UserId, request.Name), cancellationToken);
         return CreatedAtAction(nameof(GetByUser), new { userId = request.UserId }, playlist);
     }
 
     [HttpPost("{playlistId:guid}/tracks")]
-    public async Task<ActionResult<PlaylistDto>> AddTrack(Guid playlistId, [FromBody] AddTrackToPlaylistRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<PlaylistDto>> AddTrack(Guid playlistId, [FromBody] AdicionarMusicaNaPlaylistRequest request, CancellationToken cancellationToken)
     {
         var playlist = await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(playlistId, request.TrackId), cancellationToken);
         return playlist is null ? NotFound() : Ok(playlist);

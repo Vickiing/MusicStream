@@ -1,4 +1,4 @@
-@model DashboardViewModel
+@model PainelViewModel
 @{
     ViewData["Title"] = "Favoritos";
     var favoriteTracks = Model.Tracks.Where(track => Model.Favorites.FavoriteTrackIds.Contains(track.Id)).ToList();

@@ -8,19 +8,19 @@ namespace MusicStreamer.Api.Controllers;
 
 [ApiController]
 [Route("api/subscriptions")]
-public sealed class SubscriptionPlansController(IServicoPlanosAssinatura subscriptionService) : ControllerBase
+public sealed class PlanosAssinaturaController(IServicoPlanosAssinatura servicoPlanosAssinatura) : ControllerBase
 {
     [HttpGet("plans")]
     public async Task<ActionResult<IReadOnlyList<PlanoAssinaturaDto>>> GetPlans(CancellationToken cancellationToken)
     {
-        return Ok(await subscriptionService.GetPlansAsync(cancellationToken));
+        return Ok(await servicoPlanosAssinatura.GetPlansAsync(cancellationToken));
     }
 
     [Authorize]
     [HttpPost("choose-plan")]
-    public async Task<ActionResult<AssinaturaUsuarioDto>> ChoosePlan([FromBody] ChoosePlanRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<AssinaturaUsuarioDto>> ChoosePlan([FromBody] EscolherPlanoRequest request, CancellationToken cancellationToken)
     {
-        var response = await subscriptionService.ChoosePlanAsync(new EscolherPlanoDto(request.UserId, request.PlanId), cancellationToken);
+        var response = await servicoPlanosAssinatura.ChoosePlanAsync(new EscolherPlanoDto(request.UserId, request.PlanId), cancellationToken);
         return response is null ? NotFound() : Ok(response);
     }
 }
