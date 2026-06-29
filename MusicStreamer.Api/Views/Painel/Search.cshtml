@@ -1,10 +1,112 @@
-﻿@model PainelViewModel
+@model PainelViewModel
 @{
     ViewData["Title"] = "Buscar";
     var result = Model.SearchResult;
     var currentPage = result?.Page ?? 1;
     var totalPages = result?.TotalPages ?? 0;
 }
+
+<style>
+    .track-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .track-star {
+        min-width: 42px;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(29, 185, 84, 0.12);
+        color: #a7f0c0;
+        border-color: rgba(29, 185, 84, 0.35);
+        font-size: 1.05rem;
+    }
+
+    .track-star:hover {
+        background: rgba(29, 185, 84, 0.2);
+    }
+
+    .track-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(3, 6, 10, 0.72);
+        backdrop-filter: blur(8px);
+        z-index: 1200;
+    }
+
+    .track-modal-backdrop.open {
+        display: flex;
+    }
+
+    .track-modal {
+        width: min(100%, 440px);
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .track-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .track-modal-title {
+        display: grid;
+        gap: 2px;
+    }
+
+    .track-modal-close {
+        min-width: 34px;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: 50%;
+        border-color: var(--border);
+        background: var(--surface-2);
+        color: var(--text);
+    }
+
+    .track-modal-note {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px dashed var(--border);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .track-modal-form {
+        display: grid;
+        gap: 10px;
+    }
+
+    .track-modal-divider {
+        margin-top: 4px;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+    }
+
+    .track-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>
 
 <section class="panel">
     <h2>Buscar músicas e bandas</h2>
@@ -79,12 +181,19 @@
                                 </div>
                                 <span class="catalog-pill">@((track.DurationSeconds / 60).ToString())m</span>
                             </div>
-                            <div class="catalog-card-actions">
+                            <div class="track-actions">
+                                <button type="button"
+                                        class="track-star"
+                                        title="Associar à playlist"
+                                        aria-label="Associar à playlist"
+                                        data-open-playlist-modal
+                                        data-track-id="@track.Id"
+                                        data-track-label="@($"{track.Title} - {track.ArtistName}")">★</button>
                                 <form asp-action="FavoriteTrack" method="post" class="inline-form">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="TrackId" value="@track.Id" />
                                     <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
-                                    <button type="submit">Favoritar</button>
+                                    <button type="submit" class="secondary">Favoritar</button>
                                 </form>
                                 <a class="chip" asp-action="Search" asp-route-term="@track.Title">Buscar semelhante</a>
                             </div>
@@ -112,3 +221,103 @@
         </div>
     </section>
 }
+
+<div class="track-modal-backdrop" data-playlist-modal hidden aria-hidden="true">
+    <div class="track-modal" role="dialog" aria-modal="true" aria-labelledby="playlist-modal-title">
+        <div class="track-modal-header">
+            <div class="track-modal-title">
+                <h3 id="playlist-modal-title">Adicionar música à playlist</h3>
+                <span class="muted" data-modal-track-label>Selecione uma música.</span>
+            </div>
+            <button type="button" class="track-modal-close" aria-label="Fechar modal" data-close-playlist-modal>×</button>
+        </div>
+
+        <div class="track-modal-note muted">
+            Escolha uma playlist existente ou crie uma nova no próprio modal.
+        </div>
+
+        <form asp-action="AddTrack" method="post" class="track-modal-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="TrackId" value="" data-modal-track-id />
+            <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+            <input type="hidden" name="SearchPage" value="@currentPage" />
+
+            <label>Playlist existente</label>
+            <select name="PlaylistId" data-modal-playlist-select>
+                <option value="">Selecione uma playlist</option>
+                @foreach (var playlist in Model.Playlists)
+                {
+                    <option value="@playlist.Id">@playlist.Name</option>
+                }
+            </select>
+
+            <div class="track-modal-divider">ou crie uma nova</div>
+
+            <label>Nova playlist</label>
+            <input type="text" name="PlaylistName" placeholder="Nome da nova playlist" data-modal-playlist-name />
+
+            <div class="track-modal-actions">
+                <button type="submit">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const modal = document.querySelector('[data-playlist-modal]');
+        const trackIdInput = document.querySelector('[data-modal-track-id]');
+        const trackLabel = document.querySelector('[data-modal-track-label]');
+        const playlistSelect = document.querySelector('[data-modal-playlist-select]');
+        const playlistName = document.querySelector('[data-modal-playlist-name]');
+        const openButtons = document.querySelectorAll('[data-open-playlist-modal]');
+        const closeButton = document.querySelector('[data-close-playlist-modal]');
+
+        if (!modal || !trackIdInput || !trackLabel || !playlistSelect || !playlistName || !closeButton) {
+            return;
+        }
+
+        const openModal = button => {
+            trackIdInput.value = button.dataset.trackId || '';
+            trackLabel.textContent = button.dataset.trackLabel || 'Selecione uma música.';
+            playlistSelect.value = '';
+            playlistName.value = '';
+            modal.hidden = false;
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+            window.setTimeout(() => {
+                if (playlistSelect.options.length > 1) {
+                    playlistSelect.focus();
+                } else {
+                    playlistName.focus();
+                }
+            }, 0);
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+            window.setTimeout(() => {
+                modal.hidden = true;
+            }, 150);
+        };
+
+        openButtons.forEach(button => {
+            button.addEventListener('click', () => openModal(button));
+        });
+
+        closeButton.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', event => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !modal.hidden) {
+                closeModal();
+            }
+        });
+    })();
+</script>

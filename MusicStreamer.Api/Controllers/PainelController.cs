@@ -201,14 +201,33 @@ public sealed class PainelController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddTrack(AdicionarMusicaNaPlaylistViewModel model, CancellationToken cancellationToken)
     {
-        RequireUser();
-        var playlist = await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
-        if (playlist is null)
+        var user = RequireUser();
+
+        if (model.TrackId == Guid.Empty)
         {
-            return RedirectToAction(nameof(Playlists), new { message = "Não foi possível adicionar a música." });
+            return RedirectToAction(nameof(Search), new { term = model.SearchTerm, page = model.SearchPage, message = "Selecione uma música válida." });
         }
 
-        return RedirectToAction(nameof(Playlists), new { message = "Música associada à playlist." });
+        Guid playlistId = model.PlaylistId;
+
+        if (playlistId == Guid.Empty && !string.IsNullOrWhiteSpace(model.PlaylistName))
+        {
+            var createdPlaylist = await playlistService.CreateAsync(new CriarPlaylistDto(user.UserId, model.PlaylistName), cancellationToken);
+            playlistId = createdPlaylist.Id;
+        }
+
+        if (playlistId == Guid.Empty)
+        {
+            return RedirectToAction(nameof(Search), new { term = model.SearchTerm, page = model.SearchPage, message = "Escolha uma playlist existente ou crie uma nova." });
+        }
+
+        var playlist = await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(playlistId, model.TrackId), cancellationToken);
+        if (playlist is null)
+        {
+            return RedirectToAction(nameof(Search), new { term = model.SearchTerm, page = model.SearchPage, message = "Não foi possível associar a música." });
+        }
+
+        return RedirectToAction(nameof(Search), new { term = model.SearchTerm, page = model.SearchPage, message = "Música associada à playlist." });
     }
 
     [HttpPost("favorites/tracks")]

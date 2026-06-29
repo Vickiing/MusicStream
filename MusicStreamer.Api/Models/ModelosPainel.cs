@@ -62,6 +62,8 @@ public sealed class AdicionarMusicaNaPlaylistViewModel
     public Guid PlaylistId { get; set; }
     public Guid TrackId { get; set; }
     public string PlaylistName { get; set; } = string.Empty;
+    public string? SearchTerm { get; set; }
+    public int SearchPage { get; set; } = 1;
 }
 
 public sealed class MusicaFavoritaViewModel
