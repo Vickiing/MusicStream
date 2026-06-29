@@ -1,0 +1,202 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="status">@Model.StatusMessage</div>
+}
+
+<section>
+    <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+        <div>
+            <h1>@Model.DisplayName</h1>
+            <p class="muted">@Model.Email</p>
+            <div class="token">Bearer: @Model.Token</div>
+        </div>
+        <form asp-controller="AccountMvc" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="secondary">Sair</button>
+        </form>
+    </div>
+</section>
+
+<div class="grid two" style="margin-top:16px;">
+    <section>
+        <h2>Planos</h2>
+        <table>
+            <thead>
+                <tr><th>Plano</th><th>Preco</th><th>Limite</th><th></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var plan in Model.Plans)
+            {
+                <tr>
+                    <td>@plan.Name</td>
+                    <td>@plan.MonthlyPrice.ToString("C")</td>
+                    <td>@plan.MaxTransactionAmount.ToString("C")</td>
+                    <td>
+                        <form asp-action="ChoosePlan" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="PlanId" value="@plan.Id" />
+                            <button type="submit">Selecionar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Criar playlist</h2>
+        <form asp-action="CreatePlaylist" method="post">
+            @Html.AntiForgeryToken()
+            <input type="text" name="Name" placeholder="Nome da playlist" />
+            <button type="submit">Criar</button>
+        </form>
+        <h3 style="margin-top:16px;">Playlists do usuario</h3>
+        @foreach (var playlist in Model.Playlists)
+        {
+            <div style="border-top:1px solid #d8e0ea; padding-top:12px; margin-top:12px;">
+                <strong>@playlist.Name</strong>
+                <div class="muted">@playlist.Id</div>
+                <form asp-action="AddTrack" method="post" class="inline-form" style="margin-top:8px;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PlaylistId" value="@playlist.Id" />
+                    <select name="TrackId">
+                        @foreach (var track in Model.Tracks)
+                        {
+                            <option value="@track.Id">@track.Title - @track.ArtistName</option>
+                        }
+                    </select>
+                    <button type="submit">Adicionar musica</button>
+                </form>
+                @if (playlist.Tracks.Any())
+                {
+                    <ul>
+                        @foreach (var track in playlist.Tracks)
+                        {
+                            <li>@track.Title - @track.ArtistName</li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+    </section>
+</div>
+
+<div class="grid two" style="margin-top:16px;">
+    <section>
+        <h2>Busca de musicas e bandas</h2>
+        <form asp-action="Index" method="get" class="inline-form">
+            <input type="text" name="term" value="@Model.SearchTerm" placeholder="Digite banda ou musica" />
+            <button type="submit">Buscar</button>
+        </form>
+
+        @if (Model.SearchResult is not null)
+        {
+            <h3 style="margin-top:16px;">Bandas</h3>
+            <ul>
+                @foreach (var artist in Model.SearchResult.Artists)
+                {
+                    <li>
+                        @artist.Name
+                        <form asp-action="FavoriteArtist" method="post" class="inline-form" style="display:inline-flex; margin-left:8px;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="ArtistId" value="@artist.Id" />
+                            <button type="submit">Favoritar</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+
+            <h3>Musicas</h3>
+            <ul>
+                @foreach (var track in Model.SearchResult.Tracks)
+                {
+                    <li>
+                        @track.Title - @track.ArtistName
+                        <form asp-action="FavoriteTrack" method="post" class="inline-form" style="display:inline-flex; margin-left:8px;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="TrackId" value="@track.Id" />
+                            <button type="submit">Favoritar</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section>
+        <h2>Autorizar transacao</h2>
+        <form asp-action="AuthorizeTransaction" method="post">
+            @Html.AntiForgeryToken()
+            <select name="MerchantId">
+                @foreach (var merchant in Model.Merchants)
+                {
+                    <option value="@merchant.Id">@merchant.Name (@merchant.Category)</option>
+                }
+            </select>
+            <input type="number" name="Amount" step="0.01" min="0.01" placeholder="Valor" />
+            <input type="datetime-local" name="RequestedAtUtc" />
+            <button type="submit">Autorizar</button>
+        </form>
+
+        <h3 style="margin-top:16px;">Ultimas transacoes</h3>
+        <table>
+            <thead>
+                <tr><th>Status</th><th>Valor</th><th>Motivo</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Transactions)
+            {
+                <tr>
+                    <td>@item.Status</td>
+                    <td>@item.Amount.ToString("C")</td>
+                    <td>@item.Reason</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<div class="grid two" style="margin-top:16px;">
+    <section>
+        <h2>Bandas</h2>
+        <ul>
+            @foreach (var artist in Model.Artists)
+            {
+                <li>@artist.Name <span class="muted">(@artist.Id)</span></li>
+            }
+        </ul>
+    </section>
+
+    <section>
+        <h2>Albuns e musicas</h2>
+        <table>
+            <thead>
+                <tr><th>Album</th><th>Banda</th><th>Ano</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var album in Model.Albums)
+            {
+                <tr>
+                    <td>@album.Title</td>
+                    <td>@album.ArtistName</td>
+                    <td>@album.ReleaseYear</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <h3 style="margin-top:16px;">Musicas</h3>
+        <ul>
+            @foreach (var track in Model.Tracks)
+            {
+                <li>@track.Title - @track.ArtistName <span class="muted">(@track.Id)</span></li>
+            }
+        </ul>
+    </section>
+</div>
