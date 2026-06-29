@@ -46,6 +46,7 @@ builder.Services.AddScoped<IServicoAutorizacaoTransacao, ServicoAutorizacaoTrans
 builder.Services.AddScoped<IServicoAutenticacao, AuthService>();
 builder.Services.AddScoped<IServicoPlanosAssinatura, SubscriptionService>();
 builder.Services.AddScoped<IServicoCatalogo, CatalogService>();
+builder.Services.AddScoped<IServicoComerciantes, MerchantService>();
 builder.Services.AddScoped<IServicoPlaylist, PlaylistService>();
 builder.Services.AddScoped<IServicoFavoritos, FavoritesService>();
 builder.Services.AddScoped<IServicoTransacoes, TransactionService>();
