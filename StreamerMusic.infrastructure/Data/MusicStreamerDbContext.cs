@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.ValueObjects;
 
@@ -22,10 +21,6 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var emailConverter = new ValueConverter<EnderecoEmail, string>(
-            value => value.Value,
-            value => new EnderecoEmail(value));
-
         modelBuilder.Entity<ContaUsuario>(entity =>
         {
             entity.ToTable("UserAccounts");
@@ -33,7 +28,12 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.Property(item => item.DisplayName).HasMaxLength(120).IsRequired();
             entity.Property(item => item.PasswordHash).HasMaxLength(512).IsRequired();
             entity.Property(item => item.Status).HasConversion<int>().IsRequired();
-            entity.Property(item => item.Email).HasConversion(emailConverter).HasMaxLength(180).IsRequired();
+            entity.Property(item => item.Email)
+                .HasConversion(
+                    value => value.Value,
+                    value => new EnderecoEmail(value))
+                .HasMaxLength(180)
+                .IsRequired();
             entity.HasIndex(item => item.Email).IsUnique();
         });
 
@@ -141,4 +141,3 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
         });
     }
 }
-

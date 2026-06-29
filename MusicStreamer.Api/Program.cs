@@ -63,6 +63,7 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapGet("/", () => Results.Redirect("/app/account/login"));
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Root}/{id?}");
