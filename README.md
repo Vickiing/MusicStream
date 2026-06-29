@@ -54,7 +54,7 @@ dotnet run --project MusicStreamer.Api/MusicStreamer.Api.csproj
 - MVC: `https://localhost:7107/app/account/register`
 - API: `https://localhost:7107/api/...`
 
-Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startup. O banco deve ser atualizado manualmente com `dotnet ef database update` antes de subir a API.
+Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startup. O banco deve ser atualizado manualmente com `dotnet ef database update` antes de subir a API. A migration `SeedCatalogoInicial` popula planos, artistas, albuns, musicas e comerciantes de exemplo.
 
 ## Evidencias das rubricas
 
@@ -69,7 +69,7 @@ Observacao: a aplicacao nao aplica migrations nem seed automaticamente no startu
 | 2.3 Busca de musica | Demonstrado | [CatalogController.cs linhas 23-31](./MusicStreamer.Api/Controllers/CatalogController.cs#L23-L31), [DashboardController.cs linhas 24-57](./MusicStreamer.Api/Controllers/DashboardController.cs#L24-L57), [CatalogRepository.cs linhas 40-73](./StreamerMusic.infrastructure/Repositories/CatalogRepository.cs#L40-L73), [MusicStreamerDbContext.cs linhas 47-75](./StreamerMusic.infrastructure/Data/MusicStreamerDbContext.cs#L47-L75) |
 | 2.4 Favoritar musica | Demonstrado | API: [FavoritesController.cs linhas 14-35](./MusicStreamer.Api/Controllers/FavoritesController.cs#L14-L35). MVC: [DashboardController.cs linhas 92-107](./MusicStreamer.Api/Controllers/DashboardController.cs#L92-L107), [Index.cshtml linhas 98-128](./MusicStreamer.Api/Views/Dashboard/Index.cshtml#L98-L128). Service: [FavoritesService.cs linhas 13-68](./MusicStreamer.App/Services/FavoritesService.cs#L13-L68) |
 | 3.1 Modelo EF Core | Demonstrado | [MusicStreamerDbContext.cs linhas 10-21](./StreamerMusic.infrastructure/Data/MusicStreamerDbContext.cs#L10-L21), [MusicStreamerDbContext.cs linhas 23-134](./StreamerMusic.infrastructure/Data/MusicStreamerDbContext.cs#L23-L134) |
-| 3.2 Migrations | Demonstrado | [20260628090000_InitialCreate.cs linhas 8-239](./StreamerMusic.infrastructure/Migrations/20260628090000_InitialCreate.cs#L8-L239) |
+| 3.2 Migrations | Demonstrado | [20260628090000_InitialCreate.cs linhas 8-239](./StreamerMusic.infrastructure/Migrations/20260628090000_InitialCreate.cs#L8-L239), [SeedCatalogoInicial.cs linhas 7-169](./StreamerMusic.infrastructure/Migrations/20260629050000_SeedCatalogoInicial.cs#L7-L169) |
 | 3.3 Repository pattern | Demonstrado | Contratos: [IUserAccountRepository.cs linhas 5-10](./MusicStreamer.Domain/Repositories/IUserAccountRepository.cs#L5-L10), [IPlaylistRepository.cs linhas 5-10](./MusicStreamer.Domain/Repositories/IPlaylistRepository.cs#L5-L10), [ITransactionRepository.cs linhas 5-9](./MusicStreamer.Domain/Repositories/ITransactionRepository.cs#L5-L9). Implementacoes: [UserAccountRepository.cs linhas 8-31](./StreamerMusic.infrastructure/Repositories/UserAccountRepository.cs#L8-L31), [TransactionRepository.cs linhas 9-34](./StreamerMusic.infrastructure/Repositories/TransactionRepository.cs#L9-L34) |
 | 3.4 Injecao de dependencia | Demonstrado | [Program.cs linhas 18-58](./MusicStreamer.Api/Program.cs#L18-L58) |
 | 4.1 Microsoft Azure | Demonstrado | Preparacao para Azure SQL e configuracao por ambiente em [Program.cs linhas 28-32](./MusicStreamer.Api/Program.cs#L28-L32) e [appsettings.json linhas 10-15](./MusicStreamer.Api/appsettings.json#L10-L15) |

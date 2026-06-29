@@ -143,7 +143,7 @@ public partial class InitialCreate : Migration
                     column: x => x.ArtistId,
                     principalTable: "Artists",
                     principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
+                    onDelete: ReferentialAction.NoAction);
             });
 
         migrationBuilder.CreateTable(
@@ -170,15 +170,15 @@ public partial class InitialCreate : Migration
             {
                 table.PrimaryKey("PK_PlaylistTracks", x => x.Id);
                 table.ForeignKey(
-                    name: "FK_PlaylistTracks_MusicTracks_MusicId",
-                    column: x => x.MusicId,
-                    principalTable: "MusicTracks",
-                    principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
-                table.ForeignKey(
                     name: "FK_PlaylistTracks_Playlists_PlaylistId",
                     column: x => x.PlaylistId,
                     principalTable: "Playlists",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+                table.ForeignKey(
+                    name: "FK_PlaylistTracks_MusicTracks_MusicId",
+                    column: x => x.MusicId,
+                    principalTable: "MusicTracks",
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Cascade);
             });

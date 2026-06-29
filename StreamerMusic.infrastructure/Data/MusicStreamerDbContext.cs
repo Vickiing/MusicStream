@@ -73,7 +73,10 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.Property(item => item.NormalizedTitle).HasMaxLength(150).IsRequired();
             entity.HasIndex(item => item.NormalizedTitle);
             entity.HasIndex(item => new { item.ArtistId, item.NormalizedTitle });
-            entity.HasOne(item => item.Artist).WithMany(item => item.Tracks).HasForeignKey(item => item.ArtistId);
+            entity.HasOne(item => item.Artist)
+                .WithMany(item => item.Tracks)
+                .HasForeignKey(item => item.ArtistId)
+                .OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(item => item.Album).WithMany(item => item.Tracks).HasForeignKey(item => item.AlbumId);
         });
 
@@ -82,6 +85,10 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.ToTable("Playlists");
             entity.HasKey(item => item.Id);
             entity.Property(item => item.Name).HasMaxLength(120).IsRequired();
+            entity.HasMany(item => item.Tracks)
+                .WithOne(item => item.Playlist)
+                .HasForeignKey(item => item.PlaylistId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<PlaylistTrack>(entity =>

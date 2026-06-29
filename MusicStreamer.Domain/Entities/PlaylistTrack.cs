@@ -7,6 +7,7 @@ public sealed class PlaylistTrack
     public Guid MusicId { get; private set; }
     public DateTimeOffset AddedAtUtc { get; private set; }
 
+    public Playlist? Playlist { get; private set; }
     public MusicTrack? Music { get; private set; }
 
     private PlaylistTrack()

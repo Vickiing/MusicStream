@@ -31,7 +31,6 @@ var azureSqlConnection = builder.Configuration.GetConnectionString("AzureSqlConn
 builder.Services.AddDbContext<MusicStreamerDbContext>(options =>
     options.UseSqlServer(azureSqlConnection));
 
-builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
