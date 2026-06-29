@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IFavoritesRepository
+public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IRepositorioFavoritos
 {
-    public async Task AddFavoriteTrackAsync(FavoriteMusic favoriteMusic, CancellationToken cancellationToken = default)
+    public async Task AddFavoriteTrackAsync(MusicaFavorita favoriteMusic, CancellationToken cancellationToken = default)
     {
         var exists = await dbContext.FavoriteMusics.AnyAsync(
             item => item.UserAccountId == favoriteMusic.UserAccountId && item.TrackId == favoriteMusic.TrackId,
@@ -33,7 +33,7 @@ public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IFav
         }
     }
 
-    public async Task AddFavoriteArtistAsync(FavoriteBand favoriteBand, CancellationToken cancellationToken = default)
+    public async Task AddFavoriteArtistAsync(BandaFavorita favoriteBand, CancellationToken cancellationToken = default)
     {
         var exists = await dbContext.FavoriteBands.AnyAsync(
             item => item.UserAccountId == favoriteBand.UserAccountId && item.ArtistId == favoriteBand.ArtistId,
@@ -59,7 +59,7 @@ public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IFav
         }
     }
 
-    public async Task<(IReadOnlyList<FavoriteMusic> FavoriteTracks, IReadOnlyList<FavoriteBand> FavoriteBands)> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<(IReadOnlyList<MusicaFavorita> FavoriteTracks, IReadOnlyList<BandaFavorita> FavoriteBands)> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var tracks = await dbContext.FavoriteMusics
             .AsNoTracking()
@@ -74,3 +74,4 @@ public sealed class FavoritesRepository(MusicStreamerDbContext dbContext) : IFav
         return (tracks, artists);
     }
 }
+

@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using MusicStreamer.App.Abstractions;
@@ -6,9 +6,9 @@ using MusicStreamer.Domain.Entities;
 
 namespace MusicStreamer.infrastructure.Security;
 
-public sealed class JwtTokenService(IConfiguration configuration) : ITokenService
+public sealed class ServicoTokenBearerSimples(IConfiguration configuration) : IServicoToken
 {
-    public string Generate(UserAccount account)
+    public string Generate(ContaUsuario account)
     {
         var key = configuration["Jwt:Key"] ?? "MusicStreamer-Development-Key-Change-Me-12345";
         var expiresAt = DateTimeOffset.UtcNow.AddHours(8).ToUnixTimeSeconds();
@@ -24,3 +24,4 @@ public sealed class JwtTokenService(IConfiguration configuration) : ITokenServic
         return Convert.ToBase64String(signatureBytes);
     }
 }
+

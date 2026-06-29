@@ -1,4 +1,4 @@
-using MusicStreamer.App.Contracts;
+﻿using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
@@ -7,13 +7,13 @@ using MusicStreamer.Domain.Services;
 namespace MusicStreamer.App.Services;
 
 public sealed class TransactionService(
-    IUserAccountRepository userAccountRepository,
-    ISubscriptionPlanRepository subscriptionPlanRepository,
-    IMerchantRepository merchantRepository,
-    ITransactionRepository transactionRepository,
-    ITransactionAuthorizationDomainService authorizationDomainService) : ITransactionService
+    IContaUsuarioRepository userAccountRepository,
+    IPlanoAssinaturaRepository subscriptionPlanRepository,
+    IComercianteRepository merchantRepository,
+    ITransacaoRepository transactionRepository,
+    IServicoAutorizacaoTransacao authorizationDomainService) : IServicoTransacoes
 {
-    public async Task<TransactionResultDto?> AuthorizeAsync(AuthorizeTransactionDto input, CancellationToken cancellationToken = default)
+    public async Task<ResultadoTransacaoDto?> AuthorizeAsync(AutorizarTransacaoDto input, CancellationToken cancellationToken = default)
     {
         var user = await userAccountRepository.GetByIdAsync(input.UserId, cancellationToken);
         var merchant = await merchantRepository.GetByIdAsync(input.MerchantId, cancellationToken);
@@ -37,22 +37,22 @@ public sealed class TransactionService(
             decision.IsApproved,
             decision.Reason);
 
-        transaction.AddNotification(TransactionNotification.CreateMerchantNotification(transaction.Id, merchant.Name, decision));
-        transaction.AddNotification(TransactionNotification.CreateCardOwnerNotification(transaction.Id, user.Email.Value, decision));
+        transaction.AddNotification(NotificacaoTransacao.CreateMerchantNotification(transaction.Id, merchant.Name, decision));
+        transaction.AddNotification(NotificacaoTransacao.CreateCardOwnerNotification(transaction.Id, user.Email.Value, decision));
 
         await transactionRepository.AddAsync(transaction, cancellationToken);
         return Map(transaction);
     }
 
-    public async Task<IReadOnlyList<TransactionResultDto>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<ResultadoTransacaoDto>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var transactions = await transactionRepository.GetByUserAsync(userId, cancellationToken);
         return transactions.Select(Map).ToList();
     }
 
-    private static TransactionResultDto Map(Transaction transaction)
+    private static ResultadoTransacaoDto Map(Transaction transaction)
     {
-        return new TransactionResultDto(
+        return new ResultadoTransacaoDto(
             transaction.Id,
             transaction.UserAccountId,
             transaction.MerchantId,
@@ -61,7 +61,7 @@ public sealed class TransactionService(
             transaction.Reason,
             transaction.RequestedAtUtc,
             transaction.Notifications
-                .Select(notification => new TransactionNotificationDto(
+                .Select(notification => new NotificacaoTransacaoDto(
                     notification.Recipient,
                     notification.Channel,
                     notification.Status.ToString(),
@@ -69,3 +69,4 @@ public sealed class TransactionService(
                 .ToList());
     }
 }
+

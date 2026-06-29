@@ -1,13 +1,14 @@
-using MusicStreamer.Domain.Entities;
+﻿using MusicStreamer.Domain.Entities;
 
 namespace MusicStreamer.Domain.Repositories;
 
-public interface ICatalogRepository
+public interface ICatalogoRepository
 {
-    Task<IReadOnlyList<Artist>> GetArtistsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Banda>> GetArtistsAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Album>> GetAlbumsAsync(CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<MusicTrack>> GetTracksAsync(CancellationToken cancellationToken = default);
-    Task<Artist?> GetArtistByIdAsync(Guid artistId, CancellationToken cancellationToken = default);
-    Task<MusicTrack?> GetTrackByIdAsync(Guid trackId, CancellationToken cancellationToken = default);
-    Task<CatalogSearchResult> SearchAsync(string term, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Musica>> GetTracksAsync(CancellationToken cancellationToken = default);
+    Task<Banda?> GetArtistByIdAsync(Guid artistId, CancellationToken cancellationToken = default);
+    Task<Musica?> GetTrackByIdAsync(Guid trackId, CancellationToken cancellationToken = default);
+    Task<ResultadoBuscaCatalogo> SearchAsync(string term, CancellationToken cancellationToken = default);
 }
+

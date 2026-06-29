@@ -1,8 +1,9 @@
-using MusicStreamer.Domain.Entities;
+﻿using MusicStreamer.Domain.Entities;
 
 namespace MusicStreamer.App.Abstractions;
 
-public interface ITokenService
+public interface IServicoToken
 {
-    string Generate(UserAccount account);
+    string Generate(ContaUsuario account);
 }
+

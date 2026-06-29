@@ -1,3 +1,4 @@
-namespace MusicStreamer.App.DTOs;
+﻿namespace MusicStreamer.App.DTOs;
 
-public sealed record MerchantDto(Guid Id, string Name, string Category, bool IsActive);
+public sealed record ComercianteDto(Guid Id, string Name, string Category, bool IsActive);
+

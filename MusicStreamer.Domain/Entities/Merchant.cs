@@ -1,17 +1,17 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
-public sealed class Merchant
+public sealed class Comerciante
 {
     public Guid Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Category { get; private set; } = string.Empty;
     public bool IsActive { get; private set; }
 
-    private Merchant()
+    private Comerciante()
     {
     }
 
-    public Merchant(string name, string category, bool isActive = true)
+    public Comerciante(string name, string category, bool isActive = true)
     {
         Id = Guid.NewGuid();
         Name = name.Trim();
@@ -19,3 +19,4 @@ public sealed class Merchant
         IsActive = isActive;
     }
 }
+

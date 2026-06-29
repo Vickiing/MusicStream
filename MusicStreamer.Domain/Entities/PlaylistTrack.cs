@@ -1,6 +1,6 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
-public sealed class PlaylistTrack
+public sealed class FaixaPlaylist
 {
     public Guid Id { get; private set; }
     public Guid PlaylistId { get; private set; }
@@ -8,15 +8,15 @@ public sealed class PlaylistTrack
     public DateTimeOffset AddedAtUtc { get; private set; }
 
     public Playlist? Playlist { get; private set; }
-    public MusicTrack? Music { get; private set; }
+    public Musica? Music { get; private set; }
 
-    private PlaylistTrack()
+    private FaixaPlaylist()
     {
     }
 
-    public static PlaylistTrack Create(Guid playlistId, Guid musicId)
+    public static FaixaPlaylist Create(Guid playlistId, Guid musicId)
     {
-        return new PlaylistTrack
+        return new FaixaPlaylist
         {
             Id = Guid.NewGuid(),
             PlaylistId = playlistId,
@@ -25,3 +25,4 @@ public sealed class PlaylistTrack
         };
     }
 }
+

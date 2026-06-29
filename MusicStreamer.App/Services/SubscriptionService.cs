@@ -1,18 +1,18 @@
-using MusicStreamer.App.Contracts;
+﻿using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
 public sealed class SubscriptionService(
-    IUserAccountRepository userAccountRepository,
-    ISubscriptionPlanRepository subscriptionPlanRepository) : ISubscriptionService
+    IContaUsuarioRepository userAccountRepository,
+    IPlanoAssinaturaRepository subscriptionPlanRepository) : IServicoPlanosAssinatura
 {
-    public async Task<IReadOnlyList<SubscriptionPlanDto>> GetPlansAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<PlanoAssinaturaDto>> GetPlansAsync(CancellationToken cancellationToken = default)
     {
         var plans = await subscriptionPlanRepository.GetAllAsync(cancellationToken);
         return plans
-            .Select(plan => new SubscriptionPlanDto(
+            .Select(plan => new PlanoAssinaturaDto(
                 plan.Id,
                 plan.Name,
                 plan.MonthlyPrice,
@@ -21,7 +21,7 @@ public sealed class SubscriptionService(
             .ToList();
     }
 
-    public async Task<UserSubscriptionDto?> ChoosePlanAsync(ChoosePlanDto input, CancellationToken cancellationToken = default)
+    public async Task<AssinaturaUsuarioDto?> ChoosePlanAsync(EscolherPlanoDto input, CancellationToken cancellationToken = default)
     {
         var user = await userAccountRepository.GetByIdAsync(input.UserId, cancellationToken);
         var plan = await subscriptionPlanRepository.GetByIdAsync(input.PlanId, cancellationToken);
@@ -34,6 +34,7 @@ public sealed class SubscriptionService(
         user.AssignSubscription(plan.Id);
         await userAccountRepository.UpdateAsync(user, cancellationToken);
 
-        return new UserSubscriptionDto(user.Id, plan.Id, plan.Name, user.SubscriptionPlanId.HasValue);
+        return new AssinaturaUsuarioDto(user.Id, plan.Id, plan.Name, user.SubscriptionPlanId.HasValue);
     }
 }
+

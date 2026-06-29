@@ -1,4 +1,4 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
 public sealed class Album
 {
@@ -8,8 +8,8 @@ public sealed class Album
     public string NormalizedTitle { get; private set; } = string.Empty;
     public int ReleaseYear { get; private set; }
 
-    public Artist Artist { get; private set; } = null!;
-    public ICollection<MusicTrack> Tracks { get; private set; } = new List<MusicTrack>();
+    public Banda Banda { get; private set; } = null!;
+    public ICollection<Musica> Tracks { get; private set; } = new List<Musica>();
 
     private Album()
     {
@@ -24,3 +24,4 @@ public sealed class Album
         ReleaseYear = releaseYear;
     }
 }
+

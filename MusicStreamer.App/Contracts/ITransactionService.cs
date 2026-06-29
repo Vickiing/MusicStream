@@ -1,9 +1,10 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface ITransactionService
+public interface IServicoTransacoes
 {
-    Task<TransactionResultDto?> AuthorizeAsync(AuthorizeTransactionDto input, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<TransactionResultDto>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<ResultadoTransacaoDto?> AuthorizeAsync(AutorizarTransacaoDto input, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ResultadoTransacaoDto>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default);
 }
+

@@ -1,41 +1,42 @@
-using MusicStreamer.App.Contracts;
+﻿using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Repositories;
 
 namespace MusicStreamer.App.Services;
 
-public sealed class CatalogService(ICatalogRepository catalogRepository) : ICatalogService
+public sealed class CatalogService(ICatalogoRepository catalogRepository) : IServicoCatalogo
 {
-    public async Task<IReadOnlyList<ArtistDto>> GetArtistsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<BandaDto>> GetArtistsAsync(CancellationToken cancellationToken = default)
     {
         var artists = await catalogRepository.GetArtistsAsync(cancellationToken);
-        return artists.Select(artist => new ArtistDto(artist.Id, artist.Name)).ToList();
+        return artists.Select(artist => new BandaDto(artist.Id, artist.Name)).ToList();
     }
 
     public async Task<IReadOnlyList<AlbumDto>> GetAlbumsAsync(CancellationToken cancellationToken = default)
     {
         var albums = await catalogRepository.GetAlbumsAsync(cancellationToken);
-        return albums.Select(album => new AlbumDto(album.Id, album.Title, album.Artist.Name, album.ReleaseYear)).ToList();
+        return albums.Select(album => new AlbumDto(album.Id, album.Title, album.Banda.Name, album.ReleaseYear)).ToList();
     }
 
-    public async Task<IReadOnlyList<TrackDto>> GetTracksAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<MusicaDto>> GetTracksAsync(CancellationToken cancellationToken = default)
     {
         var tracks = await catalogRepository.GetTracksAsync(cancellationToken);
         return tracks
-            .Select(track => new TrackDto(track.Id, track.Title, track.Artist.Name, track.Album.Title, track.DurationSeconds))
+            .Select(track => new MusicaDto(track.Id, track.Title, track.Banda.Name, track.Album.Title, track.DurationSeconds))
             .ToList();
     }
 
-    public Task<CatalogSearchResultDto> SearchAsync(string term, CancellationToken cancellationToken = default)
+    public Task<ResultadoBuscaCatalogoDto> SearchAsync(string term, CancellationToken cancellationToken = default)
     {
         return SearchInternalAsync(term, cancellationToken);
     }
 
-    private async Task<CatalogSearchResultDto> SearchInternalAsync(string term, CancellationToken cancellationToken)
+    private async Task<ResultadoBuscaCatalogoDto> SearchInternalAsync(string term, CancellationToken cancellationToken)
     {
         var result = await catalogRepository.SearchAsync(term, cancellationToken);
-        return new CatalogSearchResultDto(
-            result.Artists.Select(item => new ArtistDto(item.Id, item.Name)).ToList(),
-            result.Tracks.Select(item => new TrackDto(item.Id, item.Title, item.ArtistName, item.AlbumTitle, item.DurationSeconds)).ToList());
+        return new ResultadoBuscaCatalogoDto(
+            result.Artists.Select(item => new BandaDto(item.Id, item.Name)).ToList(),
+            result.Tracks.Select(item => new MusicaDto(item.Id, item.Title, item.ArtistName, item.AlbumTitle, item.DurationSeconds)).ToList());
     }
 }
+

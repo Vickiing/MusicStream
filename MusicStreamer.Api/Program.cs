@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using MusicStreamer.App.Abstractions;
 using MusicStreamer.App.Contracts;
@@ -31,28 +31,28 @@ var azureSqlConnection = builder.Configuration.GetConnectionString("AzureSqlConn
 builder.Services.AddDbContext<MusicStreamerDbContext>(options =>
     options.UseSqlServer(azureSqlConnection));
 
-builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
-builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
-builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
+builder.Services.AddScoped<IContaUsuarioRepository, UserAccountRepository>();
+builder.Services.AddScoped<IPlanoAssinaturaRepository, SubscriptionPlanRepository>();
+builder.Services.AddScoped<ICatalogoRepository, CatalogRepository>();
 builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
-builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
-builder.Services.AddScoped<IMerchantRepository, MerchantRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IRepositorioFavoritos, FavoritesRepository>();
+builder.Services.AddScoped<IComercianteRepository, MerchantRepository>();
+builder.Services.AddScoped<ITransacaoRepository, TransactionRepository>();
 
-builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
-builder.Services.AddScoped<ITokenService, JwtTokenService>();
-builder.Services.AddScoped<ITransactionAuthorizationDomainService, TransactionAuthorizationDomainService>();
+builder.Services.AddScoped<IHashSenha, HashSenhaPbkdf2>();
+builder.Services.AddScoped<IServicoToken, ServicoTokenBearerSimples>();
+builder.Services.AddScoped<IServicoAutorizacaoTransacao, ServicoAutorizacaoTransacao>();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
-builder.Services.AddScoped<ICatalogService, CatalogService>();
-builder.Services.AddScoped<IPlaylistService, PlaylistService>();
-builder.Services.AddScoped<IFavoritesService, FavoritesService>();
-builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IServicoAutenticacao, AuthService>();
+builder.Services.AddScoped<IServicoPlanosAssinatura, SubscriptionService>();
+builder.Services.AddScoped<IServicoCatalogo, CatalogService>();
+builder.Services.AddScoped<IServicoPlaylist, PlaylistService>();
+builder.Services.AddScoped<IServicoFavoritos, FavoritesService>();
+builder.Services.AddScoped<IServicoTransacoes, TransactionService>();
 
 builder.Services
     .AddAuthentication("Bearer")
-    .AddScheme<AuthenticationSchemeOptions, SimpleBearerAuthenticationHandler>("Bearer", _ => { });
+    .AddScheme<AuthenticationSchemeOptions, ManipuladorAutenticacaoBearerSimples>("Bearer", _ => { });
 
 builder.Services.AddAuthorization();
 
@@ -68,3 +68,4 @@ app.MapControllerRoute(
     pattern: "{controller=Dashboard}/{action=Root}/{id?}");
 app.MapControllers();
 app.Run();
+

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Enums;
 using MusicStreamer.Domain.Repositories;
@@ -6,7 +6,7 @@ using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class TransactionRepository(MusicStreamerDbContext dbContext) : ITransactionRepository
+public sealed class TransactionRepository(MusicStreamerDbContext dbContext) : ITransacaoRepository
 {
     public async Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default)
     {
@@ -18,7 +18,7 @@ public sealed class TransactionRepository(MusicStreamerDbContext dbContext) : IT
     {
         return dbContext.Transactions
             .AsNoTracking()
-            .Where(item => item.UserAccountId == userId && item.Status == TransactionStatus.Approved)
+            .Where(item => item.UserAccountId == userId && item.Status == StatusTransacao.Approved)
             .OrderByDescending(item => item.RequestedAtUtc)
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -33,3 +33,4 @@ public sealed class TransactionRepository(MusicStreamerDbContext dbContext) : IT
             .ToListAsync(cancellationToken);
     }
 }
+

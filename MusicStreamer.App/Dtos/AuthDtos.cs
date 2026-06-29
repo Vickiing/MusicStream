@@ -1,7 +1,8 @@
-namespace MusicStreamer.App.DTOs;
+﻿namespace MusicStreamer.App.DTOs;
 
-public sealed record RegisterUserDto(string DisplayName, string Email, string Password);
+public sealed record CadastrarUsuarioDto(string DisplayName, string Email, string Password);
 
-public sealed record LoginDto(string Email, string Password);
+public sealed record EntrarDto(string Email, string Password);
 
-public sealed record AuthResponseDto(Guid UserId, string DisplayName, string Email, string Token);
+public sealed record RespostaAutenticacaoDto(Guid UserId, string DisplayName, string Email, string Token);
+

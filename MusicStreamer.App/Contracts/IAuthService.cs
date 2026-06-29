@@ -1,9 +1,10 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface IAuthService
+public interface IServicoAutenticacao
 {
-    Task<AuthResponseDto> RegisterAsync(RegisterUserDto input, CancellationToken cancellationToken = default);
-    Task<AuthResponseDto?> LoginAsync(LoginDto input, CancellationToken cancellationToken = default);
+    Task<RespostaAutenticacaoDto> RegisterAsync(CadastrarUsuarioDto input, CancellationToken cancellationToken = default);
+    Task<RespostaAutenticacaoDto?> LoginAsync(EntrarDto input, CancellationToken cancellationToken = default);
 }
+

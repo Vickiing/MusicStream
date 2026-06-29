@@ -1,6 +1,6 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
-public sealed class SubscriptionPlan
+public sealed class PlanoAssinatura
 {
     public Guid Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
@@ -9,11 +9,11 @@ public sealed class SubscriptionPlan
     public bool AllowsNightTransactions { get; private set; }
     public bool IsActive { get; private set; }
 
-    private SubscriptionPlan()
+    private PlanoAssinatura()
     {
     }
 
-    public SubscriptionPlan(string name, decimal monthlyPrice, decimal maxTransactionAmount, bool allowsNightTransactions, bool isActive = true)
+    public PlanoAssinatura(string name, decimal monthlyPrice, decimal maxTransactionAmount, bool allowsNightTransactions, bool isActive = true)
     {
         Id = Guid.NewGuid();
         Name = name.Trim();
@@ -23,3 +23,4 @@ public sealed class SubscriptionPlan
         IsActive = isActive;
     }
 }
+

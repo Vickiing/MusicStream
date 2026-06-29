@@ -1,7 +1,8 @@
-namespace MusicStreamer.App.Abstractions;
+﻿namespace MusicStreamer.App.Abstractions;
 
-public interface IPasswordHasher
+public interface IHashSenha
 {
     string Hash(string password);
     bool Verify(string hashedPassword, string providedPassword);
 }
+

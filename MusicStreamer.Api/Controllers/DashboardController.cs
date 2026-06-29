@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicStreamer.Api.Extensions;
 using MusicStreamer.Api.Models;
 using MusicStreamer.App.Contracts;
@@ -8,12 +8,12 @@ namespace MusicStreamer.Api.Controllers;
 
 [Route("app")]
 public sealed class DashboardController(
-    ICatalogService catalogService,
-    ISubscriptionService subscriptionService,
-    IPlaylistService playlistService,
-    IFavoritesService favoritesService,
-    ITransactionService transactionService,
-    IMerchantService merchantService) : Controller
+    IServicoCatalogo catalogService,
+    IServicoPlanosAssinatura subscriptionService,
+    IServicoPlaylist playlistService,
+    IServicoFavoritos favoritesService,
+    IServicoTransacoes transactionService,
+    IServicoComerciantes merchantService) : Controller
 {
     [HttpGet("")]
     public IActionResult Root()
@@ -30,7 +30,7 @@ public sealed class DashboardController(
             return RedirectToAction("Login", "AccountMvc");
         }
 
-        CatalogSearchResultDto? searchResult = null;
+        ResultadoBuscaCatalogoDto? searchResult = null;
         if (!string.IsNullOrWhiteSpace(term))
         {
             searchResult = await catalogService.SearchAsync(term, cancellationToken);
@@ -62,7 +62,7 @@ public sealed class DashboardController(
     public async Task<IActionResult> ChoosePlan(ChoosePlanViewModel model, CancellationToken cancellationToken)
     {
         var user = RequireUser();
-        await subscriptionService.ChoosePlanAsync(new ChoosePlanDto(user.UserId, model.PlanId), cancellationToken);
+        await subscriptionService.ChoosePlanAsync(new EscolherPlanoDto(user.UserId, model.PlanId), cancellationToken);
         return RedirectToAction(nameof(Index), new { message = "Plano atualizado com sucesso." });
     }
 
@@ -76,7 +76,7 @@ public sealed class DashboardController(
             return RedirectToAction(nameof(Index), new { message = "Informe o nome da playlist." });
         }
 
-        await playlistService.CreateAsync(new CreatePlaylistDto(user.UserId, model.Name), cancellationToken);
+        await playlistService.CreateAsync(new CriarPlaylistDto(user.UserId, model.Name), cancellationToken);
         return RedirectToAction(nameof(Index), new { message = "Playlist criada." });
     }
 
@@ -85,7 +85,7 @@ public sealed class DashboardController(
     public async Task<IActionResult> AddTrack(AddTrackToPlaylistViewModel model, CancellationToken cancellationToken)
     {
         RequireUser();
-        await playlistService.AddTrackAsync(new AddTrackToPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
+        await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(model.PlaylistId, model.TrackId), cancellationToken);
         return RedirectToAction(nameof(Index), new { message = "Musica associada a playlist." });
     }
 
@@ -113,7 +113,7 @@ public sealed class DashboardController(
     {
         var user = RequireUser();
         await transactionService.AuthorizeAsync(
-            new AuthorizeTransactionDto(user.UserId, model.MerchantId, model.Amount, model.RequestedAtUtc ?? DateTimeOffset.UtcNow),
+            new AutorizarTransacaoDto(user.UserId, model.MerchantId, model.Amount, model.RequestedAtUtc ?? DateTimeOffset.UtcNow),
             cancellationToken);
 
         return RedirectToAction(nameof(Index), new { message = "Transacao processada." });
@@ -130,3 +130,4 @@ public sealed class DashboardController(
         return user;
     }
 }
+

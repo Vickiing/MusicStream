@@ -1,4 +1,4 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
 public sealed class Playlist
 {
@@ -6,7 +6,7 @@ public sealed class Playlist
     public Guid UserAccountId { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public DateTimeOffset CreatedAtUtc { get; private set; }
-    public ICollection<PlaylistTrack> Tracks { get; private set; } = new List<PlaylistTrack>();
+    public ICollection<FaixaPlaylist> Tracks { get; private set; } = new List<FaixaPlaylist>();
 
     private Playlist()
     {
@@ -30,6 +30,7 @@ public sealed class Playlist
             return;
         }
 
-        Tracks.Add(PlaylistTrack.Create(Id, trackId));
+        Tracks.Add(FaixaPlaylist.Create(Id, trackId));
     }
 }
+

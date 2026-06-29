@@ -1,35 +1,35 @@
-using MusicStreamer.Domain.Enums;
+﻿using MusicStreamer.Domain.Enums;
 using MusicStreamer.Domain.Services;
 
 namespace MusicStreamer.Domain.Entities;
 
-public sealed class TransactionNotification
+public sealed class NotificacaoTransacao
 {
     public Guid Id { get; private set; }
     public Guid TransactionId { get; private set; }
     public string Recipient { get; private set; } = string.Empty;
     public string Channel { get; private set; } = string.Empty;
     public string Message { get; private set; } = string.Empty;
-    public NotificationStatus Status { get; private set; }
+    public StatusNotificacao Status { get; private set; }
     public DateTimeOffset SentAtUtc { get; private set; }
 
-    private TransactionNotification()
+    private NotificacaoTransacao()
     {
     }
 
-    public static TransactionNotification CreateMerchantNotification(Guid transactionId, string merchantName, TransactionAuthorizationDecision decision)
+    public static NotificacaoTransacao CreateMerchantNotification(Guid transactionId, string merchantName, DecisaoAutorizacaoTransacao decision)
     {
-        return Create(transactionId, merchantName, "MerchantWebhook", $"Transacao {decision.Reason}", NotificationStatus.Delivered);
+        return Create(transactionId, merchantName, "MerchantWebhook", $"Transacao {decision.Reason}", StatusNotificacao.Delivered);
     }
 
-    public static TransactionNotification CreateCardOwnerNotification(Guid transactionId, string email, TransactionAuthorizationDecision decision)
+    public static NotificacaoTransacao CreateCardOwnerNotification(Guid transactionId, string email, DecisaoAutorizacaoTransacao decision)
     {
-        return Create(transactionId, email, "Email", $"Sua transacao foi {decision.Reason}", NotificationStatus.Delivered);
+        return Create(transactionId, email, "Email", $"Sua transacao foi {decision.Reason}", StatusNotificacao.Delivered);
     }
 
-    private static TransactionNotification Create(Guid transactionId, string recipient, string channel, string message, NotificationStatus status)
+    private static NotificacaoTransacao Create(Guid transactionId, string recipient, string channel, string message, StatusNotificacao status)
     {
-        return new TransactionNotification
+        return new NotificacaoTransacao
         {
             Id = Guid.NewGuid(),
             TransactionId = transactionId,
@@ -41,3 +41,4 @@ public sealed class TransactionNotification
         };
     }
 }
+

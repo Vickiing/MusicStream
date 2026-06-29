@@ -1,32 +1,32 @@
-using MusicStreamer.Domain.Enums;
+﻿using MusicStreamer.Domain.Enums;
 using MusicStreamer.Domain.ValueObjects;
 
 namespace MusicStreamer.Domain.Entities;
 
-public sealed class UserAccount
+public sealed class ContaUsuario
 {
     public Guid Id { get; private set; }
     public string DisplayName { get; private set; } = string.Empty;
-    public EmailAddress Email { get; private set; } = null!;
+    public EnderecoEmail Email { get; private set; } = null!;
     public string PasswordHash { get; private set; } = string.Empty;
-    public AccountStatus Status { get; private set; }
+    public StatusConta Status { get; private set; }
     public Guid? SubscriptionPlanId { get; private set; }
     public DateTimeOffset CreatedAtUtc { get; private set; }
     public DateTimeOffset? LastLoginAtUtc { get; private set; }
 
-    private UserAccount()
+    private ContaUsuario()
     {
     }
 
-    public static UserAccount Register(string displayName, string email, string passwordHash)
+    public static ContaUsuario Register(string displayName, string email, string passwordHash)
     {
-        return new UserAccount
+        return new ContaUsuario
         {
             Id = Guid.NewGuid(),
             DisplayName = displayName.Trim(),
-            Email = new EmailAddress(email),
+            Email = new EnderecoEmail(email),
             PasswordHash = passwordHash,
-            Status = AccountStatus.Active,
+            Status = StatusConta.Active,
             CreatedAtUtc = DateTimeOffset.UtcNow
         };
     }
@@ -41,3 +41,4 @@ public sealed class UserAccount
         LastLoginAtUtc = instant;
     }
 }
+

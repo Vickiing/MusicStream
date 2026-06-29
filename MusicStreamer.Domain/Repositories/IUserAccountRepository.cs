@@ -1,11 +1,12 @@
-using MusicStreamer.Domain.Entities;
+﻿using MusicStreamer.Domain.Entities;
 
 namespace MusicStreamer.Domain.Repositories;
 
-public interface IUserAccountRepository
+public interface IContaUsuarioRepository
 {
-    Task AddAsync(UserAccount account, CancellationToken cancellationToken = default);
-    Task<UserAccount?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
-    Task<UserAccount?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default);
-    Task UpdateAsync(UserAccount account, CancellationToken cancellationToken = default);
+    Task AddAsync(ContaUsuario account, CancellationToken cancellationToken = default);
+    Task<ContaUsuario?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<ContaUsuario?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task UpdateAsync(ContaUsuario account, CancellationToken cancellationToken = default);
 }
+

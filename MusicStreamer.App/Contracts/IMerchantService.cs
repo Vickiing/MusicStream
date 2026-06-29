@@ -1,8 +1,9 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface IMerchantService
+public interface IServicoComerciantes
 {
-    Task<IReadOnlyList<MerchantDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ComercianteDto>> GetAllAsync(CancellationToken cancellationToken = default);
 }
+

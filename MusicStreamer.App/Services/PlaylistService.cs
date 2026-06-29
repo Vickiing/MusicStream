@@ -1,4 +1,4 @@
-using MusicStreamer.App.Contracts;
+﻿using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
@@ -6,11 +6,11 @@ using MusicStreamer.Domain.Repositories;
 namespace MusicStreamer.App.Services;
 
 public sealed class PlaylistService(
-    IUserAccountRepository userAccountRepository,
-    ICatalogRepository catalogRepository,
-    IPlaylistRepository playlistRepository) : IPlaylistService
+    IContaUsuarioRepository userAccountRepository,
+    ICatalogoRepository catalogRepository,
+    IPlaylistRepository playlistRepository) : IServicoPlaylist
 {
-    public async Task<PlaylistDto> CreateAsync(CreatePlaylistDto input, CancellationToken cancellationToken = default)
+    public async Task<PlaylistDto> CreateAsync(CriarPlaylistDto input, CancellationToken cancellationToken = default)
     {
         var user = await userAccountRepository.GetByIdAsync(input.UserId, cancellationToken);
         if (user is null)
@@ -23,7 +23,7 @@ public sealed class PlaylistService(
         return Map(playlist);
     }
 
-    public async Task<PlaylistDto?> AddTrackAsync(AddTrackToPlaylistDto input, CancellationToken cancellationToken = default)
+    public async Task<PlaylistDto?> AddTrackAsync(AdicionarMusicaNaPlaylistDto input, CancellationToken cancellationToken = default)
     {
         var playlist = await playlistRepository.GetByIdAsync(input.PlaylistId, cancellationToken);
         var track = await catalogRepository.GetTrackByIdAsync(input.TrackId, cancellationToken);
@@ -53,11 +53,12 @@ public sealed class PlaylistService(
             playlist.UserAccountId,
             playlist.Name,
             playlist.Tracks
-                .Select(track => new PlaylistTrackDto(
+                .Select(track => new FaixaPlaylistDto(
                     track.MusicId,
                     track.Music?.Title ?? string.Empty,
-                    track.Music?.Artist?.Name ?? string.Empty,
+                    track.Music?.Banda?.Name ?? string.Empty,
                     track.Music?.Album?.Title ?? string.Empty))
                 .ToList());
     }
 }
+

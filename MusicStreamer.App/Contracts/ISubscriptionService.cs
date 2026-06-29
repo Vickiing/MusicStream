@@ -1,9 +1,10 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface ISubscriptionService
+public interface IServicoPlanosAssinatura
 {
-    Task<IReadOnlyList<SubscriptionPlanDto>> GetPlansAsync(CancellationToken cancellationToken = default);
-    Task<UserSubscriptionDto?> ChoosePlanAsync(ChoosePlanDto input, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<PlanoAssinaturaDto>> GetPlansAsync(CancellationToken cancellationToken = default);
+    Task<AssinaturaUsuarioDto?> ChoosePlanAsync(EscolherPlanoDto input, CancellationToken cancellationToken = default);
 }
+

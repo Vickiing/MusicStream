@@ -1,9 +1,10 @@
-using MusicStreamer.Domain.Entities;
+﻿using MusicStreamer.Domain.Entities;
 
 namespace MusicStreamer.Domain.Repositories;
 
-public interface IMerchantRepository
+public interface IComercianteRepository
 {
-    Task<Merchant?> GetByIdAsync(Guid merchantId, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<Merchant>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<Comerciante?> GetByIdAsync(Guid merchantId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Comerciante>> GetAllAsync(CancellationToken cancellationToken = default);
 }
+

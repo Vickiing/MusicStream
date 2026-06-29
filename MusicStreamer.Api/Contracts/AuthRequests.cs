@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MusicStreamer.Api.Contracts;
 
@@ -10,3 +10,4 @@ public sealed record RegisterRequest(
 public sealed record LoginRequest(
     [property: Required, EmailAddress] string Email,
     [property: Required] string Password);
+

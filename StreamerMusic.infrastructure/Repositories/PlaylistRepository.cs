@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
@@ -18,7 +18,7 @@ public sealed class PlaylistRepository(MusicStreamerDbContext dbContext) : IPlay
         return dbContext.Playlists
             .Include(item => item.Tracks)
                 .ThenInclude(item => item.Music)
-                    .ThenInclude(item => item!.Artist)
+                    .ThenInclude(item => item!.Banda)
             .Include(item => item.Tracks)
                 .ThenInclude(item => item.Music)
                     .ThenInclude(item => item!.Album)
@@ -31,7 +31,7 @@ public sealed class PlaylistRepository(MusicStreamerDbContext dbContext) : IPlay
             .AsNoTracking()
             .Include(item => item.Tracks)
                 .ThenInclude(item => item.Music)
-                    .ThenInclude(item => item!.Artist)
+                    .ThenInclude(item => item!.Banda)
             .Include(item => item.Tracks)
                 .ThenInclude(item => item.Music)
                     .ThenInclude(item => item!.Album)
@@ -46,3 +46,4 @@ public sealed class PlaylistRepository(MusicStreamerDbContext dbContext) : IPlay
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
+

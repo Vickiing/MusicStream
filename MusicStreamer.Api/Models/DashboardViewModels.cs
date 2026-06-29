@@ -1,4 +1,4 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.Api.Models;
 
@@ -10,14 +10,14 @@ public sealed class DashboardViewModel
     public string Token { get; init; } = string.Empty;
     public string? SearchTerm { get; init; }
     public string? StatusMessage { get; init; }
-    public IReadOnlyList<ArtistDto> Artists { get; init; } = [];
+    public IReadOnlyList<BandaDto> Artists { get; init; } = [];
     public IReadOnlyList<AlbumDto> Albums { get; init; } = [];
-    public IReadOnlyList<TrackDto> Tracks { get; init; } = [];
-    public IReadOnlyList<SubscriptionPlanDto> Plans { get; init; } = [];
+    public IReadOnlyList<MusicaDto> Tracks { get; init; } = [];
+    public IReadOnlyList<PlanoAssinaturaDto> Plans { get; init; } = [];
     public IReadOnlyList<PlaylistDto> Playlists { get; init; } = [];
-    public IReadOnlyList<MerchantDto> Merchants { get; init; } = [];
-    public IReadOnlyList<TransactionResultDto> Transactions { get; init; } = [];
-    public CatalogSearchResultDto? SearchResult { get; init; }
+    public IReadOnlyList<ComercianteDto> Merchants { get; init; } = [];
+    public IReadOnlyList<ResultadoTransacaoDto> Transactions { get; init; } = [];
+    public ResultadoBuscaCatalogoDto? SearchResult { get; init; }
 }
 
 public sealed class SessionUserViewModel
@@ -61,3 +61,4 @@ public sealed class AuthorizeTransactionViewModel
     public decimal Amount { get; set; }
     public DateTimeOffset? RequestedAtUtc { get; set; }
 }
+

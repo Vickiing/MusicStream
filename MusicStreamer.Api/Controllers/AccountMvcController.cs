@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicStreamer.Api.Extensions;
 using MusicStreamer.Api.Models;
 using MusicStreamer.App.Contracts;
@@ -7,7 +7,7 @@ using MusicStreamer.App.DTOs;
 namespace MusicStreamer.Api.Controllers;
 
 [Route("app/account")]
-public sealed class AccountMvcController(IAuthService authService) : Controller
+public sealed class AccountMvcController(IServicoAutenticacao authService) : Controller
 {
     [HttpGet("login")]
     public IActionResult Login()
@@ -29,7 +29,7 @@ public sealed class AccountMvcController(IAuthService authService) : Controller
             return View(model);
         }
 
-        var response = await authService.LoginAsync(new LoginDto(model.Email, model.Password), cancellationToken);
+        var response = await authService.LoginAsync(new EntrarDto(model.Email, model.Password), cancellationToken);
         if (response is null)
         {
             model.ErrorMessage = "Credenciais invalidas.";
@@ -64,7 +64,7 @@ public sealed class AccountMvcController(IAuthService authService) : Controller
 
         try
         {
-            var response = await authService.RegisterAsync(new RegisterUserDto(model.DisplayName, model.Email, model.Password), cancellationToken);
+            var response = await authService.RegisterAsync(new CadastrarUsuarioDto(model.DisplayName, model.Email, model.Password), cancellationToken);
             HttpContext.Session.SetCurrentUser(new SessionUserViewModel
             {
                 UserId = response.UserId,
@@ -90,3 +90,4 @@ public sealed class AccountMvcController(IAuthService authService) : Controller
         return RedirectToAction(nameof(Login));
     }
 }
+

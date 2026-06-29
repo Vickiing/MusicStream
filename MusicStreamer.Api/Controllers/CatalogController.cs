@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 
@@ -6,10 +6,10 @@ namespace MusicStreamer.Api.Controllers;
 
 [ApiController]
 [Route("api/catalog")]
-public sealed class CatalogController(ICatalogService catalogService) : ControllerBase
+public sealed class CatalogController(IServicoCatalogo catalogService) : ControllerBase
 {
     [HttpGet("artists")]
-    public async Task<ActionResult<IReadOnlyList<ArtistDto>>> GetArtists(CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<BandaDto>>> GetArtists(CancellationToken cancellationToken)
     {
         return Ok(await catalogService.GetArtistsAsync(cancellationToken));
     }
@@ -21,7 +21,7 @@ public sealed class CatalogController(ICatalogService catalogService) : Controll
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<CatalogSearchResultDto>> Search([FromQuery] string term, CancellationToken cancellationToken)
+    public async Task<ActionResult<ResultadoBuscaCatalogoDto>> Search([FromQuery] string term, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(term))
         {
@@ -31,3 +31,4 @@ public sealed class CatalogController(ICatalogService catalogService) : Controll
         return Ok(await catalogService.SearchAsync(term, cancellationToken));
     }
 }
+

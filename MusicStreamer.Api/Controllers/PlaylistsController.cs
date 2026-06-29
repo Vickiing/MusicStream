@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicStreamer.Api.Contracts;
 using MusicStreamer.App.Contracts;
@@ -9,19 +9,19 @@ namespace MusicStreamer.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/playlists")]
-public sealed class PlaylistsController(IPlaylistService playlistService) : ControllerBase
+public sealed class PlaylistsController(IServicoPlaylist playlistService) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<PlaylistDto>> Create([FromBody] CreatePlaylistRequest request, CancellationToken cancellationToken)
     {
-        var playlist = await playlistService.CreateAsync(new CreatePlaylistDto(request.UserId, request.Name), cancellationToken);
+        var playlist = await playlistService.CreateAsync(new CriarPlaylistDto(request.UserId, request.Name), cancellationToken);
         return CreatedAtAction(nameof(GetByUser), new { userId = request.UserId }, playlist);
     }
 
     [HttpPost("{playlistId:guid}/tracks")]
     public async Task<ActionResult<PlaylistDto>> AddTrack(Guid playlistId, [FromBody] AddTrackToPlaylistRequest request, CancellationToken cancellationToken)
     {
-        var playlist = await playlistService.AddTrackAsync(new AddTrackToPlaylistDto(playlistId, request.TrackId), cancellationToken);
+        var playlist = await playlistService.AddTrackAsync(new AdicionarMusicaNaPlaylistDto(playlistId, request.TrackId), cancellationToken);
         return playlist is null ? NotFound() : Ok(playlist);
     }
 
@@ -31,3 +31,4 @@ public sealed class PlaylistsController(IPlaylistService playlistService) : Cont
         return Ok(await playlistService.GetByUserAsync(userId, cancellationToken));
     }
 }
+

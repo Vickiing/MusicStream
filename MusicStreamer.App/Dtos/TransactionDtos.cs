@@ -1,10 +1,10 @@
-namespace MusicStreamer.App.DTOs;
+﻿namespace MusicStreamer.App.DTOs;
 
-public sealed record AuthorizeTransactionDto(Guid UserId, Guid MerchantId, decimal Amount, DateTimeOffset RequestedAtUtc);
+public sealed record AutorizarTransacaoDto(Guid UserId, Guid MerchantId, decimal Amount, DateTimeOffset RequestedAtUtc);
 
-public sealed record TransactionNotificationDto(string Recipient, string Channel, string Status, string Message);
+public sealed record NotificacaoTransacaoDto(string Recipient, string Channel, string Status, string Message);
 
-public sealed record TransactionResultDto(
+public sealed record ResultadoTransacaoDto(
     Guid TransactionId,
     Guid UserId,
     Guid MerchantId,
@@ -12,4 +12,5 @@ public sealed record TransactionResultDto(
     string Status,
     string Reason,
     DateTimeOffset RequestedAtUtc,
-    IReadOnlyList<TransactionNotificationDto> Notifications);
+    IReadOnlyList<NotificacaoTransacaoDto> Notifications);
+

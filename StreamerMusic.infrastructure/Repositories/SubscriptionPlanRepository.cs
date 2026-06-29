@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
 
-public sealed class SubscriptionPlanRepository(MusicStreamerDbContext dbContext) : ISubscriptionPlanRepository
+public sealed class SubscriptionPlanRepository(MusicStreamerDbContext dbContext) : IPlanoAssinaturaRepository
 {
-    public async Task<IReadOnlyList<SubscriptionPlan>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<PlanoAssinatura>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await dbContext.SubscriptionPlans
             .AsNoTracking()
@@ -16,8 +16,9 @@ public sealed class SubscriptionPlanRepository(MusicStreamerDbContext dbContext)
             .ToListAsync(cancellationToken);
     }
 
-    public Task<SubscriptionPlan?> GetByIdAsync(Guid planId, CancellationToken cancellationToken = default)
+    public Task<PlanoAssinatura?> GetByIdAsync(Guid planId, CancellationToken cancellationToken = default)
     {
         return dbContext.SubscriptionPlans.FirstOrDefaultAsync(item => item.Id == planId, cancellationToken);
     }
 }
+

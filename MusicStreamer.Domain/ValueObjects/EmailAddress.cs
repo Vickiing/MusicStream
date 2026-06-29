@@ -1,11 +1,11 @@
-namespace MusicStreamer.Domain.ValueObjects;
+﻿namespace MusicStreamer.Domain.ValueObjects;
 
-public sealed class EmailAddress
+public sealed class EnderecoEmail
 {
     public string Value { get; }
     public string NormalizedValue { get; }
 
-    public EmailAddress(string value)
+    public EnderecoEmail(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || !value.Contains('@'))
         {
@@ -18,3 +18,4 @@ public sealed class EmailAddress
 
     public override string ToString() => Value;
 }
+

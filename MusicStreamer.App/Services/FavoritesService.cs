@@ -1,4 +1,4 @@
-using MusicStreamer.App.Contracts;
+﻿using MusicStreamer.App.Contracts;
 using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.Repositories;
@@ -6,32 +6,32 @@ using MusicStreamer.Domain.Repositories;
 namespace MusicStreamer.App.Services;
 
 public sealed class FavoritesService(
-    IUserAccountRepository userAccountRepository,
-    ICatalogRepository catalogRepository,
-    IFavoritesRepository favoritesRepository) : IFavoritesService
+    IContaUsuarioRepository userAccountRepository,
+    ICatalogoRepository catalogRepository,
+    IRepositorioFavoritos favoritesRepository) : IServicoFavoritos
 {
-    public async Task<FavoriteSummaryDto> FavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default)
+    public async Task<ResumoFavoritosDto> FavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default)
     {
         await EnsureUserAndTrackAsync(userId, trackId, cancellationToken);
-        await favoritesRepository.AddFavoriteTrackAsync(FavoriteMusic.Create(userId, trackId), cancellationToken);
+        await favoritesRepository.AddFavoriteTrackAsync(MusicaFavorita.Create(userId, trackId), cancellationToken);
         return await BuildSummaryAsync(userId, cancellationToken);
     }
 
-    public async Task<FavoriteSummaryDto> UnfavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default)
+    public async Task<ResumoFavoritosDto> UnfavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default)
     {
         await EnsureUserAndTrackAsync(userId, trackId, cancellationToken);
         await favoritesRepository.RemoveFavoriteTrackAsync(userId, trackId, cancellationToken);
         return await BuildSummaryAsync(userId, cancellationToken);
     }
 
-    public async Task<FavoriteSummaryDto> FavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default)
+    public async Task<ResumoFavoritosDto> FavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default)
     {
         await EnsureUserAndArtistAsync(userId, artistId, cancellationToken);
-        await favoritesRepository.AddFavoriteArtistAsync(FavoriteBand.Create(userId, artistId), cancellationToken);
+        await favoritesRepository.AddFavoriteArtistAsync(BandaFavorita.Create(userId, artistId), cancellationToken);
         return await BuildSummaryAsync(userId, cancellationToken);
     }
 
-    public async Task<FavoriteSummaryDto> UnfavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default)
+    public async Task<ResumoFavoritosDto> UnfavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default)
     {
         await EnsureUserAndArtistAsync(userId, artistId, cancellationToken);
         await favoritesRepository.RemoveFavoriteArtistAsync(userId, artistId, cancellationToken);
@@ -58,12 +58,13 @@ public sealed class FavoritesService(
         }
     }
 
-    private async Task<FavoriteSummaryDto> BuildSummaryAsync(Guid userId, CancellationToken cancellationToken)
+    private async Task<ResumoFavoritosDto> BuildSummaryAsync(Guid userId, CancellationToken cancellationToken)
     {
         var favorites = await favoritesRepository.GetByUserAsync(userId, cancellationToken);
-        return new FavoriteSummaryDto(
+        return new ResumoFavoritosDto(
             userId,
             favorites.FavoriteTracks.Select(item => item.TrackId).ToList(),
             favorites.FavoriteBands.Select(item => item.ArtistId).ToList());
     }
 }
+

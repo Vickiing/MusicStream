@@ -1,7 +1,8 @@
-namespace MusicStreamer.Domain.Enums;
+﻿namespace MusicStreamer.Domain.Enums;
 
-public enum NotificationStatus
+public enum StatusNotificacao
 {
     Pending = 0,
     Delivered = 1
 }
+

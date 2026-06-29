@@ -1,9 +1,9 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using MusicStreamer.App.Abstractions;
 
 namespace MusicStreamer.infrastructure.Security;
 
-public sealed class Pbkdf2PasswordHasher : IPasswordHasher
+public sealed class HashSenhaPbkdf2 : IHashSenha
 {
     private const int SaltSize = 16;
     private const int KeySize = 32;
@@ -30,3 +30,4 @@ public sealed class Pbkdf2PasswordHasher : IPasswordHasher
         return CryptographicOperations.FixedTimeEquals(expected, actual);
     }
 }
+

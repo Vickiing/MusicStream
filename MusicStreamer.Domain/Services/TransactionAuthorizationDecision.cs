@@ -1,3 +1,4 @@
-namespace MusicStreamer.Domain.Services;
+﻿namespace MusicStreamer.Domain.Services;
 
-public sealed record TransactionAuthorizationDecision(bool IsApproved, string Reason);
+public sealed record DecisaoAutorizacaoTransacao(bool IsApproved, string Reason);
+

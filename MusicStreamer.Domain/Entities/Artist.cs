@@ -1,22 +1,23 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
-public sealed class Artist
+public sealed class Banda
 {
     public Guid Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string NormalizedName { get; private set; } = string.Empty;
 
     public ICollection<Album> Albums { get; private set; } = new List<Album>();
-    public ICollection<MusicTrack> Tracks { get; private set; } = new List<MusicTrack>();
+    public ICollection<Musica> Tracks { get; private set; } = new List<Musica>();
 
-    private Artist()
+    private Banda()
     {
     }
 
-    public Artist(string name)
+    public Banda(string name)
     {
         Id = Guid.NewGuid();
         Name = name.Trim();
         NormalizedName = name.Trim().ToUpperInvariant();
     }
 }
+

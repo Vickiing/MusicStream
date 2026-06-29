@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MusicStreamer.Domain.Entities;
 using MusicStreamer.Domain.ValueObjects;
@@ -7,26 +7,26 @@ namespace MusicStreamer.infrastructure.Data;
 
 public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbContext> options) : DbContext(options)
 {
-    public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
-    public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
-    public DbSet<Artist> Artists => Set<Artist>();
+    public DbSet<ContaUsuario> UserAccounts => Set<ContaUsuario>();
+    public DbSet<PlanoAssinatura> SubscriptionPlans => Set<PlanoAssinatura>();
+    public DbSet<Banda> Artists => Set<Banda>();
     public DbSet<Album> Albums => Set<Album>();
-    public DbSet<MusicTrack> MusicTracks => Set<MusicTrack>();
+    public DbSet<Musica> MusicTracks => Set<Musica>();
     public DbSet<Playlist> Playlists => Set<Playlist>();
-    public DbSet<PlaylistTrack> PlaylistTracks => Set<PlaylistTrack>();
-    public DbSet<FavoriteMusic> FavoriteMusics => Set<FavoriteMusic>();
-    public DbSet<FavoriteBand> FavoriteBands => Set<FavoriteBand>();
-    public DbSet<Merchant> Merchants => Set<Merchant>();
+    public DbSet<FaixaPlaylist> PlaylistTracks => Set<FaixaPlaylist>();
+    public DbSet<MusicaFavorita> FavoriteMusics => Set<MusicaFavorita>();
+    public DbSet<BandaFavorita> FavoriteBands => Set<BandaFavorita>();
+    public DbSet<Comerciante> Merchants => Set<Comerciante>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
-    public DbSet<TransactionNotification> TransactionNotifications => Set<TransactionNotification>();
+    public DbSet<NotificacaoTransacao> TransactionNotifications => Set<NotificacaoTransacao>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var emailConverter = new ValueConverter<EmailAddress, string>(
+        var emailConverter = new ValueConverter<EnderecoEmail, string>(
             value => value.Value,
-            value => new EmailAddress(value));
+            value => new EnderecoEmail(value));
 
-        modelBuilder.Entity<UserAccount>(entity =>
+        modelBuilder.Entity<ContaUsuario>(entity =>
         {
             entity.ToTable("UserAccounts");
             entity.HasKey(item => item.Id);
@@ -37,7 +37,7 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.HasIndex(item => item.Email).IsUnique();
         });
 
-        modelBuilder.Entity<SubscriptionPlan>(entity =>
+        modelBuilder.Entity<PlanoAssinatura>(entity =>
         {
             entity.ToTable("SubscriptionPlans");
             entity.HasKey(item => item.Id);
@@ -46,7 +46,7 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.Property(item => item.MaxTransactionAmount).HasPrecision(18, 2);
         });
 
-        modelBuilder.Entity<Artist>(entity =>
+        modelBuilder.Entity<Banda>(entity =>
         {
             entity.ToTable("Artists");
             entity.HasKey(item => item.Id);
@@ -62,10 +62,10 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.Property(item => item.Title).HasMaxLength(150).IsRequired();
             entity.Property(item => item.NormalizedTitle).HasMaxLength(150).IsRequired();
             entity.HasIndex(item => item.NormalizedTitle);
-            entity.HasOne(item => item.Artist).WithMany(item => item.Albums).HasForeignKey(item => item.ArtistId);
+            entity.HasOne(item => item.Banda).WithMany(item => item.Albums).HasForeignKey(item => item.ArtistId);
         });
 
-        modelBuilder.Entity<MusicTrack>(entity =>
+        modelBuilder.Entity<Musica>(entity =>
         {
             entity.ToTable("MusicTracks");
             entity.HasKey(item => item.Id);
@@ -73,7 +73,7 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.Property(item => item.NormalizedTitle).HasMaxLength(150).IsRequired();
             entity.HasIndex(item => item.NormalizedTitle);
             entity.HasIndex(item => new { item.ArtistId, item.NormalizedTitle });
-            entity.HasOne(item => item.Artist)
+            entity.HasOne(item => item.Banda)
                 .WithMany(item => item.Tracks)
                 .HasForeignKey(item => item.ArtistId)
                 .OnDelete(DeleteBehavior.NoAction);
@@ -91,7 +91,7 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<PlaylistTrack>(entity =>
+        modelBuilder.Entity<FaixaPlaylist>(entity =>
         {
             entity.ToTable("PlaylistTracks");
             entity.HasKey(item => item.Id);
@@ -99,21 +99,21 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.HasOne(item => item.Music).WithMany().HasForeignKey(item => item.MusicId);
         });
 
-        modelBuilder.Entity<FavoriteMusic>(entity =>
+        modelBuilder.Entity<MusicaFavorita>(entity =>
         {
             entity.ToTable("FavoriteMusics");
             entity.HasKey(item => item.Id);
             entity.HasIndex(item => new { item.UserAccountId, item.TrackId }).IsUnique();
         });
 
-        modelBuilder.Entity<FavoriteBand>(entity =>
+        modelBuilder.Entity<BandaFavorita>(entity =>
         {
             entity.ToTable("FavoriteBands");
             entity.HasKey(item => item.Id);
             entity.HasIndex(item => new { item.UserAccountId, item.ArtistId }).IsUnique();
         });
 
-        modelBuilder.Entity<Merchant>(entity =>
+        modelBuilder.Entity<Comerciante>(entity =>
         {
             entity.ToTable("Merchants");
             entity.HasKey(item => item.Id);
@@ -130,7 +130,7 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
             entity.HasIndex(item => new { item.UserAccountId, item.RequestedAtUtc });
         });
 
-        modelBuilder.Entity<TransactionNotification>(entity =>
+        modelBuilder.Entity<NotificacaoTransacao>(entity =>
         {
             entity.ToTable("TransactionNotifications");
             entity.HasKey(item => item.Id);
@@ -141,3 +141,4 @@ public sealed class MusicStreamerDbContext(DbContextOptions<MusicStreamerDbConte
         });
     }
 }
+

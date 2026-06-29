@@ -1,14 +1,15 @@
-using MusicStreamer.Domain.Entities;
+﻿using MusicStreamer.Domain.Entities;
 
 namespace MusicStreamer.Domain.Services;
 
-public interface ITransactionAuthorizationDomainService
+public interface IServicoAutorizacaoTransacao
 {
-    TransactionAuthorizationDecision Authorize(
-        UserAccount account,
-        SubscriptionPlan? plan,
-        Merchant merchant,
+    DecisaoAutorizacaoTransacao Authorize(
+        ContaUsuario account,
+        PlanoAssinatura? plan,
+        Comerciante merchant,
         decimal amount,
         DateTimeOffset requestedAtUtc,
         Transaction? lastApprovedTransaction);
 }
+

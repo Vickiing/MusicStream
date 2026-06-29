@@ -1,6 +1,6 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
-public sealed class MusicTrack
+public sealed class Musica
 {
     public Guid Id { get; private set; }
     public Guid ArtistId { get; private set; }
@@ -9,14 +9,14 @@ public sealed class MusicTrack
     public string NormalizedTitle { get; private set; } = string.Empty;
     public int DurationSeconds { get; private set; }
 
-    public Artist Artist { get; private set; } = null!;
+    public Banda Banda { get; private set; } = null!;
     public Album Album { get; private set; } = null!;
 
-    private MusicTrack()
+    private Musica()
     {
     }
 
-    public MusicTrack(Guid artistId, Guid albumId, string title, int durationSeconds)
+    public Musica(Guid artistId, Guid albumId, string title, int durationSeconds)
     {
         Id = Guid.NewGuid();
         ArtistId = artistId;
@@ -26,3 +26,4 @@ public sealed class MusicTrack
         DurationSeconds = durationSeconds;
     }
 }
+

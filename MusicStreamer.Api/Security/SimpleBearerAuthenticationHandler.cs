@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace MusicStreamer.Api.Security;
 
-public sealed class SimpleBearerAuthenticationHandler(
+public sealed class ManipuladorAutenticacaoBearerSimples(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
     UrlEncoder encoder,
@@ -77,3 +77,4 @@ public sealed class SimpleBearerAuthenticationHandler(
         return Convert.ToBase64String(signatureBytes);
     }
 }
+

@@ -1,19 +1,19 @@
-namespace MusicStreamer.Domain.Entities;
+﻿namespace MusicStreamer.Domain.Entities;
 
-public sealed class FavoriteMusic
+public sealed class MusicaFavorita
 {
     public Guid Id { get; private set; }
     public Guid UserAccountId { get; private set; }
     public Guid TrackId { get; private set; }
     public DateTimeOffset CreatedAtUtc { get; private set; }
 
-    private FavoriteMusic()
+    private MusicaFavorita()
     {
     }
 
-    public static FavoriteMusic Create(Guid userAccountId, Guid trackId)
+    public static MusicaFavorita Create(Guid userAccountId, Guid trackId)
     {
-        return new FavoriteMusic
+        return new MusicaFavorita
         {
             Id = Guid.NewGuid(),
             UserAccountId = userAccountId,
@@ -22,3 +22,4 @@ public sealed class FavoriteMusic
         };
     }
 }
+

@@ -1,10 +1,11 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface IPlaylistService
+public interface IServicoPlaylist
 {
-    Task<PlaylistDto> CreateAsync(CreatePlaylistDto input, CancellationToken cancellationToken = default);
-    Task<PlaylistDto?> AddTrackAsync(AddTrackToPlaylistDto input, CancellationToken cancellationToken = default);
+    Task<PlaylistDto> CreateAsync(CriarPlaylistDto input, CancellationToken cancellationToken = default);
+    Task<PlaylistDto?> AddTrackAsync(AdicionarMusicaNaPlaylistDto input, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<PlaylistDto>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default);
 }
+

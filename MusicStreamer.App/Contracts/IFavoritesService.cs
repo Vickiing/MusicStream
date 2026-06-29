@@ -1,11 +1,12 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface IFavoritesService
+public interface IServicoFavoritos
 {
-    Task<FavoriteSummaryDto> FavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default);
-    Task<FavoriteSummaryDto> UnfavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default);
-    Task<FavoriteSummaryDto> FavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default);
-    Task<FavoriteSummaryDto> UnfavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default);
+    Task<ResumoFavoritosDto> FavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default);
+    Task<ResumoFavoritosDto> UnfavoriteTrackAsync(Guid userId, Guid trackId, CancellationToken cancellationToken = default);
+    Task<ResumoFavoritosDto> FavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default);
+    Task<ResumoFavoritosDto> UnfavoriteArtistAsync(Guid userId, Guid artistId, CancellationToken cancellationToken = default);
 }
+

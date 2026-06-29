@@ -1,11 +1,12 @@
-using MusicStreamer.App.DTOs;
+﻿using MusicStreamer.App.DTOs;
 
 namespace MusicStreamer.App.Contracts;
 
-public interface ICatalogService
+public interface IServicoCatalogo
 {
-    Task<IReadOnlyList<ArtistDto>> GetArtistsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<BandaDto>> GetArtistsAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<AlbumDto>> GetAlbumsAsync(CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<TrackDto>> GetTracksAsync(CancellationToken cancellationToken = default);
-    Task<CatalogSearchResultDto> SearchAsync(string term, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<MusicaDto>> GetTracksAsync(CancellationToken cancellationToken = default);
+    Task<ResultadoBuscaCatalogoDto> SearchAsync(string term, CancellationToken cancellationToken = default);
 }
+

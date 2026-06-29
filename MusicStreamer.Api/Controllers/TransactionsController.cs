@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicStreamer.Api.Contracts;
 using MusicStreamer.App.Contracts;
@@ -9,12 +9,12 @@ namespace MusicStreamer.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/transactions")]
-public sealed class TransactionsController(ITransactionService transactionService) : ControllerBase
+public sealed class TransactionsController(IServicoTransacoes transactionService) : ControllerBase
 {
     [HttpPost("authorize")]
-    public async Task<ActionResult<TransactionResultDto>> AuthorizeTransaction([FromBody] AuthorizeTransactionRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ResultadoTransacaoDto>> AuthorizeTransaction([FromBody] AuthorizeTransactionRequest request, CancellationToken cancellationToken)
     {
-        var input = new AuthorizeTransactionDto(
+        var input = new AutorizarTransacaoDto(
             request.UserId,
             request.MerchantId,
             request.Amount,
@@ -25,8 +25,9 @@ public sealed class TransactionsController(ITransactionService transactionServic
     }
 
     [HttpGet("user/{userId:guid}")]
-    public async Task<ActionResult<IReadOnlyList<TransactionResultDto>>> GetByUser(Guid userId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<ResultadoTransacaoDto>>> GetByUser(Guid userId, CancellationToken cancellationToken)
     {
         return Ok(await transactionService.GetByUserAsync(userId, cancellationToken));
     }
 }
+

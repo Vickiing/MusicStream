@@ -1,8 +1,9 @@
-namespace MusicStreamer.Domain.Enums;
+﻿namespace MusicStreamer.Domain.Enums;
 
-public enum AccountStatus
+public enum StatusConta
 {
     Pending = 0,
     Active = 1,
     Suspended = 2
 }
+
