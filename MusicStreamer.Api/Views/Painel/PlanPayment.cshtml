@@ -1,20 +1,104 @@
-﻿@model PagamentoPlanoViewModel
+@model PagamentoPlanoViewModel
 @{
     ViewData["Title"] = "Pagamento";
     var paymentAmountText = Model.PaymentAmount.ToString("C");
     var monthlyPriceText = Model.MonthlyPrice.ToString("C");
 }
 
+<style>
+    .payment-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(3, 6, 10, 0.72);
+        backdrop-filter: blur(8px);
+        z-index: 1200;
+    }
+
+    .payment-modal-backdrop.open {
+        display: flex;
+    }
+
+    .payment-modal {
+        width: min(100%, 440px);
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .payment-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .payment-modal-title {
+        display: grid;
+        gap: 2px;
+    }
+
+    .payment-modal-close {
+        min-width: 34px;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: 50%;
+        border-color: var(--border);
+        background: var(--surface-2);
+        color: var(--text);
+    }
+
+    .payment-modal-note {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px dashed var(--border);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .payment-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>
+
 <div id="payment-status" class="status" style="display:@(string.IsNullOrWhiteSpace(Model.StatusMessage) ? "none" : "block")">
     @Model.StatusMessage
+</div>
+
+<div class="payment-modal-backdrop" id="payment-modal" hidden aria-hidden="true">
+    <div class="payment-modal" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
+        <div class="payment-modal-header">
+            <div class="payment-modal-title">
+                <h3 id="payment-modal-title">Confirmação de pagamento</h3>
+                <span class="muted" id="payment-modal-subtitle">Aguardando confirmação.</span>
+            </div>
+            <button type="button" class="payment-modal-close" aria-label="Fechar modal" id="payment-modal-close">×</button>
+        </div>
+
+        <div class="payment-modal-note muted" id="payment-modal-message">
+            Conclua o pagamento para ativar o plano.
+        </div>
+
+        <div class="payment-modal-actions">
+            <button type="button" id="payment-modal-ok">Fechar</button>
+        </div>
+    </div>
 </div>
 
 <section class="panel" style="margin:16px 0;">
     <div class="chip">Pagamento de ativação</div>
     <h1 style="margin-top:10px;">Finalize a assinatura de @Model.PlanName</h1>
     <p class="muted" style="max-width: 760px;">
-        O valor fixo de R$50 apenas simula a confirmação da compra. Ao concluir, a assinatura passa a valer
-        imediatamente no layout e no player.
+        O valor fixo de R$50 apenas confirma a compra simulada. Ao concluir, o status da assinatura muda na hora
+        e o player é liberado sem precisar recarregar a tela.
     </p>
 </section>
 
@@ -41,7 +125,7 @@
         <h2>Confirmar pagamento</h2>
         @if (!Model.IsUpgradeAllowed)
         {
-            <div class="status">Voce ja possui um plano igual ou superior. Escolha uma opcao acima do plano atual.</div>
+            <div class="status">Você já possui um plano igual ou superior. Escolha uma opção acima do plano atual.</div>
         }
 
         <form asp-action="ConfirmPlanPayment" method="post" data-ajax-submit="true" data-status-target="#payment-status">
@@ -63,3 +147,60 @@
         </form>
     </section>
 </div>
+
+<script>
+    (() => {
+        const modal = document.getElementById('payment-modal');
+        const message = document.getElementById('payment-modal-message');
+        const subtitle = document.getElementById('payment-modal-subtitle');
+        const closeButton = document.getElementById('payment-modal-close');
+        const okButton = document.getElementById('payment-modal-ok');
+
+        if (!modal || !message || !subtitle || !closeButton || !okButton) {
+            return;
+        }
+
+        const openModal = (text, success) => {
+            message.textContent = text || 'Pagamento processado.';
+            subtitle.textContent = success ? 'Plano ativado com sucesso.' : 'Falha ao concluir a operação.';
+            modal.hidden = false;
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+            window.setTimeout(() => {
+                modal.hidden = true;
+            }, 150);
+        };
+
+        closeButton.addEventListener('click', closeModal);
+        okButton.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', event => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('app:ajax-response', event => {
+            const detail = event.detail;
+            const action = detail?.form?.getAttribute('action') || '';
+
+            if (!action.includes('/subscriptions/payment')) {
+                return;
+            }
+
+            const payload = detail.payload || {};
+            openModal(payload.message, !!payload.success);
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !modal.hidden) {
+                closeModal();
+            }
+        });
+    })();
+</script>

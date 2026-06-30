@@ -653,6 +653,9 @@ else
                 }
 
                 updateSubscriptionUI(payload);
+                document.dispatchEvent(new CustomEvent('app:ajax-response', {
+                    detail: { form, payload }
+                }));
             } catch {
                 // Fallback silencioso: o submit normal continua funcionando sem JS.
                 form.submit();

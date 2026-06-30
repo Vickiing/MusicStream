@@ -1,4 +1,4 @@
-﻿@model PainelViewModel
+@model PainelViewModel
 @{
     ViewData["Title"] = "Transações";
 }
@@ -7,45 +7,18 @@
     @Model.StatusMessage
 </div>
 
-<div class="grid two" style="margin-top:16px;">
-    <section class="panel">
-        <h2>Concluir pagamento</h2>
-        <p class="muted">O sistema usa o horário atual automaticamente. O usuário só informa o comerciante e o valor.</p>
-        <form asp-action="AuthorizeTransaction" method="post" data-ajax-submit="true" data-status-target="#transactions-status">
-            @Html.AntiForgeryToken()
-            <select name="MerchantId">
-                @foreach (var merchant in Model.Merchants)
-                {
-                    <option value="@merchant.Id">@merchant.Name (@merchant.Category)</option>
-                }
-            </select>
-            <input type="number" name="Amount" step="0.01" min="0.01" placeholder="Valor" />
-            <button type="submit">Concluir transação</button>
-        </form>
-    </section>
-
-    <section class="panel">
-        <h2>Últimas transações</h2>
-        @if (!Model.Transactions.Any())
-        {
-            <p class="muted">Sem transações.</p>
-        }
-        else
-        {
-            <div class="catalog-grid">
-                @foreach (var item in Model.Transactions.Take(6))
-                {
-                    <div class="catalog-card">
-                        <div class="catalog-card-top">
-                            <div>
-                                <strong>@item.Status</strong>
-                                <div class="muted">@item.Reason</div>
-                            </div>
-                            <span class="catalog-pill">@item.Amount.ToString("C")</span>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
-    </section>
-</div>
+<section class="panel" style="margin-top:16px;">
+    <h2>Concluir pagamento</h2>
+    <p class="muted">O sistema usa o horário atual automaticamente. O usuário só informa o comerciante e o valor.</p>
+    <form asp-action="AuthorizeTransaction" method="post" data-ajax-submit="true" data-status-target="#transactions-status">
+        @Html.AntiForgeryToken()
+        <select name="MerchantId">
+            @foreach (var merchant in Model.Merchants)
+            {
+                <option value="@merchant.Id">@merchant.Name (@merchant.Category)</option>
+            }
+        </select>
+        <input type="number" name="Amount" step="0.01" min="0.01" placeholder="Valor" />
+        <button type="submit">Concluir transação</button>
+    </form>
+</section>
