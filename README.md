@@ -42,7 +42,7 @@ dotnet run --project MusicStreamer.Api/MusicStreamer.Api.csproj
 
 ## Evidências das rubricas
 
-Os links abaixo apontam diretamente para os arquivos usados como evidência. A ideia é facilitar a conferência do professor sem precisar procurar o código manualmente.
+Os links abaixo apontam diretamente para os arquivos usados como evidência.
 
 ### 1. Desenvolvimento de sistemas web e utilização de arquiteturas em camadas
 
@@ -75,7 +75,7 @@ Os links abaixo apontam diretamente para os arquivos usados como evidência. A i
 
 #### 4.1 Demonstração do Microsoft Azure
 
-A aplicação foi preparada para rodar com serviços gerenciados da Azure, porque isso reduz o trabalho de infraestrutura, facilita a publicação e mantém o foco na aplicação. O ponto principal aqui é usar um ambiente de hospedagem simples de manter e fácil de revisar pelo professor, com separação clara entre aplicação e banco.
+A aplicação foi preparada para rodar com serviços gerenciados da Azure, porque isso reduz o trabalho de infraestrutura, facilita a publicação e mantém o foco na aplicação. O ponto principal aqui é usar um ambiente de hospedagem simples de manter e fácil de revisar, com separação clara entre aplicação e banco.
 
 Arquivos de apoio: [Program.cs](./MusicStreamer.Api/Program.cs) e [appsettings.json](./MusicStreamer.Api/appsettings.json).
 
@@ -99,6 +99,5 @@ Arquivos de apoio: [Program.cs](./MusicStreamer.Api/Program.cs), [Shared/_Layout
 
 ## Observações funcionais
 
-- O seed inicial é executado no startup para facilitar a validação do professor.
-- O projeto já deixa a base pronta para cadastro, login, assinatura, busca, favoritos, playlists e transações.
-- As telas foram organizadas para demonstrar o fluxo principal da aplicação sem exigir configuração manual extra.
+- O seed inicial é executado no startup.
+- O projeto deixa a base pronta para cadastro, login, assinatura, busca, favoritos, playlists e transações.
