@@ -1,6 +1,7 @@
-﻿using MusicStreamer.Domain.Entities;
+using MusicStreamer.App.DTOs;
+using MusicStreamer.Domain.Entities;
 
-namespace MusicStreamer.Domain.Repositories;
+namespace MusicStreamer.App.Contracts;
 
 public interface ICatalogoRepository
 {
@@ -9,6 +10,5 @@ public interface ICatalogoRepository
     Task<IReadOnlyList<Musica>> GetTracksAsync(CancellationToken cancellationToken = default);
     Task<Banda?> GetArtistByIdAsync(Guid artistId, CancellationToken cancellationToken = default);
     Task<Musica?> GetTrackByIdAsync(Guid trackId, CancellationToken cancellationToken = default);
-    Task<ResultadoBuscaCatalogo> SearchAsync(string term, int page, int pageSize, CancellationToken cancellationToken = default);
+    Task<ResultadoBuscaCatalogoDto> SearchAsync(string term, int page, int pageSize, CancellationToken cancellationToken = default);
 }
-

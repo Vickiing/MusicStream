@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using MusicStreamer.App.Contracts;
+using MusicStreamer.App.DTOs;
 using MusicStreamer.Domain.Entities;
-using MusicStreamer.Domain.Repositories;
 using MusicStreamer.infrastructure.Data;
 
 namespace MusicStreamer.infrastructure.Repositories;
@@ -47,7 +48,7 @@ public sealed class CatalogoRepository(MusicStreamerDbContext dbContext) : ICata
             .FirstOrDefaultAsync(item => item.Id == trackId, cancellationToken);
     }
 
-    public async Task<ResultadoBuscaCatalogo> SearchAsync(string term, int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<ResultadoBuscaCatalogoDto> SearchAsync(string term, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var normalizedTerm = term.Trim().ToUpperInvariant();
 
@@ -56,7 +57,7 @@ public sealed class CatalogoRepository(MusicStreamerDbContext dbContext) : ICata
             .Where(item => item.NormalizedName.StartsWith(normalizedTerm))
             .OrderBy(item => item.Name)
             .Take(6)
-            .Select(item => new BandaBuscaCatalogo(item.Id, item.Name))
+            .Select(item => new BandaDto(item.Id, item.Name))
             .ToListAsync(cancellationToken);
 
         var tracksQuery = dbContext.MusicTracks
@@ -75,10 +76,11 @@ public sealed class CatalogoRepository(MusicStreamerDbContext dbContext) : ICata
             .OrderBy(item => item.Title)
             .Skip((sanitizedPage - 1) * sanitizedPageSize)
             .Take(sanitizedPageSize)
-            .Select(item => new MusicaBuscaCatalogo(item.Id, item.Title, item.Banda.Name, item.Album.Title, item.DurationSeconds))
+            .Select(item => new MusicaDto(item.Id, item.Title, item.Banda.Name, item.Album.Title, item.DurationSeconds))
             .ToListAsync(cancellationToken);
 
-        return new ResultadoBuscaCatalogo(artists, tracks, sanitizedPage, sanitizedPageSize, totalTracks);
+        var totalPages = totalTracks == 0 ? 0 : (int)Math.Ceiling(totalTracks / (double)sanitizedPageSize);
+        return new ResultadoBuscaCatalogoDto(artists, tracks, sanitizedPage, sanitizedPageSize, totalTracks, totalPages);
     }
 }
 
