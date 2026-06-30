@@ -70,7 +70,7 @@ public sealed class PainelController(
             ? plans.FirstOrDefault(item => item.Id == user.SubscriptionPlanId.Value)
             : null;
 
-        ViewData["HasActiveSubscription"] = currentPlan is not null;
+        ViewData["HasActiveSubscription"] = user.SubscriptionPlanId.HasValue;
         ViewData["CurrentPlanName"] = currentPlan?.Name ?? string.Empty;
 
         ViewData["UseAppShell"] = true;
@@ -327,7 +327,7 @@ public sealed class PainelController(
             Transactions = await transactionService.GetByUserAsync(user.UserId, cancellationToken),
             SearchResult = searchResult,
             Favorites = await favoritesService.GetByUserAsync(user.UserId, cancellationToken),
-            HasActiveSubscription = currentPlan is not null,
+            HasActiveSubscription = user.SubscriptionPlanId.HasValue,
             CurrentPlanName = currentPlan?.Name ?? string.Empty,
             CurrentPlanMonthlyPrice = currentPlan?.MonthlyPrice ?? 0m,
             SearchPage = searchResult?.Page ?? page,

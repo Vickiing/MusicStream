@@ -538,7 +538,7 @@ else
                 <span class="player-title">Player</span>
                 <span class="muted" data-player-status>@(hasActiveSubscription ? "Pronto para uso" : "Assine um plano para liberar o player")</span>
             </div>
-            <div class="chip" data-subscription-chip>@(hasActiveSubscription ? $"Plano ativo: {currentPlanName}" : "Assinatura pendente")</div>
+            <div class="chip" data-subscription-chip>@(hasActiveSubscription ? (string.IsNullOrWhiteSpace(currentPlanName) ? "Plano ativo" : $"Plano ativo: {currentPlanName}") : "Assinatura pendente")</div>
         </div>
 
         <div class="player-meta">
