@@ -9,6 +9,9 @@ Aplicação de streaming de música desenvolvida em ASP.NET Core com arquitetura
 - `MusicStreamer.Domain`: entidades, value objects, regras de negócio e contratos.
 - `StreamerMusic.infrastructure`: acesso a dados, EF Core, repositórios, migrations e seed.
 
+#### Modelo do dominio: 
+<img width="1408" height="768" alt="modelo_dominio" src="https://github.com/user-attachments/assets/37053b60-1e11-48d5-ae83-d0c6c0f8a46d" />
+
 ## Como configurar
 
 Defina a connection string do Azure SQL Server em `ConnectionStrings:AzureSqlConnection`.
